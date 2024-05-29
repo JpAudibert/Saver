@@ -1,3 +1,5 @@
+using Backend.Spendings.Interface;
+using Backend.Spendings.Services;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -12,6 +14,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddSingleton<ISpendingService, SpendingServiceArray>();
 
 var app = builder.Build();
 
