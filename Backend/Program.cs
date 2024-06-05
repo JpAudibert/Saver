@@ -1,5 +1,5 @@
 using Backend.Spendings.Interface;
-using Backend.Spendings.Services;
+using Backend.Spendings.Repositories;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -15,7 +15,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<ISpendingService, SpendingServiceArray>();
+builder.Services.AddSingleton<ISpendingRepository, SpendingsRepository>();
 
 var app = builder.Build();
 
