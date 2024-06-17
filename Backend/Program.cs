@@ -23,8 +23,8 @@ builder.Services.AddSwaggerGen(swagger =>
     swagger.SwaggerDoc("v1", new OpenApiInfo
     {
         Version = "v1",
-        Title = "JWT Token Authentication API",
-        Description = ".NET 8 Web API"
+        Title = "Saver",
+        Description = "Saving your money is our goal"
     });
     // To Enable authorization using Swagger (JWT)
     swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
