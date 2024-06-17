@@ -4,9 +4,9 @@ namespace Backend.Infrastructure.Models;
 
 public class AuthenticateRequest
 {
-    [DefaultValue("System")]
+    [DefaultValue("name@mail.com")]
     public required string Email { get; set; }
 
-    [DefaultValue("System")]
+    [DefaultValue("password")]
     public required string Password { get; set; }
 }

@@ -16,9 +16,10 @@ public class UserService : IUserService
     private readonly IConfiguration _configuration;
     private readonly IMongoCollection<User> _usersCollection;
 
-    public UserService(IOptions<AppSettings> appSettings)
+    public UserService(IOptions<AppSettings> appSettings, IConfiguration configuration)
     {
         _appSettings = appSettings.Value;
+        _configuration = configuration;
         string connectionUri = _configuration?.GetConnectionString("Saver") ?? default!;
 
         MongoClient client = new(connectionUri);
@@ -29,7 +30,7 @@ public class UserService : IUserService
 
     public async Task<AuthenticateResponse?> Authenticate(AuthenticateRequest model)
     {
-        var user = await _usersCollection.FindAsync(x => x.Email == model.Email && x.Password == model.Password).Result.FirstAsync();
+        var user = await _usersCollection.FindAsync(x => x.Email == model.Email && x.Password == model.Password).Result.FirstOrDefaultAsync();
 
         // return null if user not found
         if (user == null) return null;
