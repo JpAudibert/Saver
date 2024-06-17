@@ -12,12 +12,14 @@ namespace Backend.Users.Services;
 
 public class UserService : IUserService
 {
+    private readonly ILogger<UserService> _logger;
     private readonly AppSettings _appSettings;
     private readonly IConfiguration _configuration;
     private readonly IMongoCollection<User> _usersCollection;
 
-    public UserService(IOptions<AppSettings> appSettings, IConfiguration configuration)
+    public UserService(ILogger<UserService> logger, IOptions<AppSettings> appSettings, IConfiguration configuration)
     {
+        _logger = logger;
         _appSettings = appSettings.Value;
         _configuration = configuration;
         string connectionUri = _configuration?.GetConnectionString("Saver") ?? default!;
@@ -55,38 +57,47 @@ public class UserService : IUserService
 
     public async Task<User?> AddAndUpdateUser(User userObj)
     {
-        User? user = null;
-
-        List<KeyValuePair<string, object>> filterDictionary = [
-            new KeyValuePair<string, object>("RegularId", userObj.RegularId!),
-        ];
-
-        BsonDocument filter = new(filterDictionary);
-        var update = Builders<User>.Update
-            .Set(x => x.Name, userObj.Name)
-            .Set(x => x.Email, userObj.Email)
-            .Set(x => x.IdentificationNumber, userObj.IdentificationNumber)
-            .Set(x => x.Password, userObj.Password)
-            .Set(x => x.IsActive, userObj.IsActive);
-
-        user = await _usersCollection.FindOneAndUpdateAsync(filter, update);
-
-        if (user is not null)
+        try
         {
+            User? user = null;
+
+            List<KeyValuePair<string, object>> filterDictionary = [
+                new KeyValuePair<string, object>("RegularId", userObj.RegularId!),
+            ];
+
+            BsonDocument filter = new(filterDictionary);
+            var update = Builders<User>.Update
+                .Set(x => x.Name, userObj.Name)
+                .Set(x => x.Email, userObj.Email)
+                .Set(x => x.IdentificationNumber, userObj.IdentificationNumber)
+                .Set(x => x.Password, userObj.Password)
+                .Set(x => x.IsActive, userObj.IsActive);
+
+            user = await _usersCollection.FindOneAndUpdateAsync(filter, update);
+
+            if (user is not null)
+            {
+                return user;
+            }
+
+            if (userObj.RegularId.IsNullOrEmpty())
+            {
+                userObj.RegularId = Guid.NewGuid().ToString();
+                await _usersCollection.InsertOneAsync(userObj);
+                user = userObj;
+            }
+
             return user;
         }
-
-        if (userObj.RegularId.IsNullOrEmpty())
+        catch (Exception ex)
         {
-            userObj.RegularId = Guid.NewGuid().ToString();
-            await _usersCollection.InsertOneAsync(userObj);
-            user = userObj;
+            _logger.LogError(ex, "Error occurred while adding or updating user.");
+            throw;
         }
 
-        return user;
 
     }
-    // helper methods
+    
     private async Task<string> GenerateJwtToken(User user)
     {
         //Generate token that is valid for 7 days

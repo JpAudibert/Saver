@@ -26,7 +26,14 @@ public class UsersController(IUserService userService) : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] User userObj)
     {
-        return Ok(await _userService.AddAndUpdateUser(userObj));
+        try
+        {
+            return Ok(await _userService.AddAndUpdateUser(userObj));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 
     [Authorize]
