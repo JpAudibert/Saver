@@ -9,7 +9,6 @@ public class User
     public required string Name { get; set; }
     public required string Email { get; set; }
 
-    [JsonIgnore]
     public string Password { get; set; } = default!;
     public bool IsActive { get; set; }
 }

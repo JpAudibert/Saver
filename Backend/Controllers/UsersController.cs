@@ -4,11 +4,18 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 
-namespace Backend.Infrastructure.Controllers;
+namespace Backend.Controllers;
 
-public class AuthController(IUserService userService) : ControllerBase
+[ApiController]
+[Route("[controller]")]
+public class UsersController: ControllerBase
 {
-    private IUserService _userService = userService;
+    private IUserService _userService;
+
+    public UsersController(IUserService userService)
+    {
+        _userService = userService;
+    }
 
     [HttpPost("authenticate")]
     public async Task<IActionResult> Authenticate(AuthenticateRequest model)
@@ -21,16 +28,13 @@ public class AuthController(IUserService userService) : ControllerBase
         return Ok(response);
     }
 
-    // POST api/<CustomerController>
     [HttpPost]
-    [Authorize]
     public async Task<IActionResult> Post([FromBody] User userObj)
     {
         userObj.Id = ObjectId.Empty;
         return Ok(await _userService.AddAndUpdateUser(userObj));
     }
 
-    // PUT api/<CustomerController>/5
     [HttpPut("{id}")]
     [Authorize]
     public async Task<IActionResult> Put(ObjectId id, [FromBody] User userObj)
