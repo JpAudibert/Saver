@@ -1,7 +1,7 @@
 using Backend.Helpers;
-using Backend.Infrastructure.Interfaces;
-using Backend.Infrastructure.Models;
-using Backend.Infrastructure.Services;
+using Backend.Users.Interfaces;
+using Backend.Users.Models;
+using Backend.Users.Services;
 using Microsoft.OpenApi.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;

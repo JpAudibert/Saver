@@ -1,5 +1,5 @@
-﻿using Backend.Infrastructure.Interfaces;
-using Backend.Infrastructure.Models;
+﻿using Backend.Users.Interfaces;
+using Backend.Users.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson;

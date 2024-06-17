@@ -1,5 +1,5 @@
-﻿using Backend.Infrastructure.Interfaces;
-using Backend.Infrastructure.Models;
+﻿using Backend.Users.Interfaces;
+using Backend.Users.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson;
@@ -8,7 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace Backend.Infrastructure.Services;
+namespace Backend.Users.Services;
 
 public class UserService : IUserService
 {
@@ -24,7 +24,7 @@ public class UserService : IUserService
 
         MongoClient client = new(connectionUri);
         IMongoDatabase database = client.GetDatabase("saver");
-        
+
         _usersCollection = database.GetCollection<User>("users");
     }
 

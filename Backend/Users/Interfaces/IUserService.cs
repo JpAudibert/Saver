@@ -1,7 +1,7 @@
-﻿using Backend.Infrastructure.Models;
+﻿using Backend.Users.Models;
 using MongoDB.Bson;
 
-namespace Backend.Infrastructure.Interfaces;
+namespace Backend.Users.Interfaces;
 
 public interface IUserService
 {

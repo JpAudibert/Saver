@@ -1,21 +1,16 @@
-﻿using Backend.Infrastructure.Interfaces;
-using Backend.Infrastructure.Models;
+﻿using Backend.Users.Interfaces;
+using Backend.Users.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 
-namespace Backend.Controllers;
+namespace Backend.Users.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class UsersController: ControllerBase
+public class UsersController(IUserService userService) : ControllerBase
 {
-    private IUserService _userService;
-
-    public UsersController(IUserService userService)
-    {
-        _userService = userService;
-    }
+    private readonly IUserService _userService = userService;
 
     [HttpPost("authenticate")]
     public async Task<IActionResult> Authenticate(AuthenticateRequest model)
@@ -35,8 +30,8 @@ public class UsersController: ControllerBase
         return Ok(await _userService.AddAndUpdateUser(userObj));
     }
 
-    [HttpPut("{id}")]
     [Authorize]
+    [HttpPut("{id}")]
     public async Task<IActionResult> Put(ObjectId id, [FromBody] User userObj)
     {
         userObj.Id = id;
