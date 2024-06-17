@@ -38,10 +38,8 @@ public class JwtMiddleware(RequestDelegate next, IOptions<AppSettings> appSettin
             }, out SecurityToken validatedToken);
 
             var jwtToken = (JwtSecurityToken)validatedToken;
-            if (!ObjectId.TryParse(jwtToken.Claims.First(x => x.Type == "id").Value, out var userId))
-            {
-                throw new Exception("Invalid token");
-            }
+            var userId = jwtToken.Claims.First(x => x.Type == "regularId").Value.ToString();
+            
 
             // attach user to context on successful jwt validation
             context.Items["User"] = userService.GetById(userId);

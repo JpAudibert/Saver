@@ -26,6 +26,8 @@ public class UserService : IUserService
         IMongoDatabase database = client.GetDatabase("saver");
 
         _usersCollection = database.GetCollection<User>("users");
+        _usersCollection.Indexes.CreateOne(new CreateIndexModel<User>(Builders<User>.IndexKeys.Ascending(x => x.Email), new CreateIndexOptions { Unique = true }));
+        _usersCollection.Indexes.CreateOne(new CreateIndexModel<User>(Builders<User>.IndexKeys.Ascending(x => x.IdentificationNumber), new CreateIndexOptions { Unique = true }));
     }
 
     public async Task<AuthenticateResponse?> Authenticate(AuthenticateRequest model)
@@ -36,7 +38,7 @@ public class UserService : IUserService
         if (user == null) return null;
 
         // authentication successful so generate jwt token
-        var token = await generateJwtToken(user);
+        var token = await GenerateJwtToken(user);
 
         return new AuthenticateResponse(user, token);
     }
@@ -46,29 +48,46 @@ public class UserService : IUserService
         return await _usersCollection.FindAsync(x => x.IsActive == true).Result.ToListAsync();
     }
 
-    public async Task<User?> GetById(ObjectId id)
+    public async Task<User?> GetById(string id)
     {
-        return await _usersCollection.FindAsync(x => x.Id == id).Result.FirstOrDefaultAsync();
+        return await _usersCollection.FindAsync(x => x.RegularId == id).Result.FirstOrDefaultAsync();
     }
 
     public async Task<User?> AddAndUpdateUser(User userObj)
     {
-        bool isSuccess = false;
-        if (userObj.Id != ObjectId.Empty)
+        User? user = null;
+
+        List<KeyValuePair<string, object>> filterDictionary = [
+            new KeyValuePair<string, object>("RegularId", userObj.RegularId!),
+        ];
+
+        BsonDocument filter = new(filterDictionary);
+        var update = Builders<User>.Update
+            .Set(x => x.Name, userObj.Name)
+            .Set(x => x.Email, userObj.Email)
+            .Set(x => x.IdentificationNumber, userObj.IdentificationNumber)
+            .Set(x => x.Password, userObj.Password)
+            .Set(x => x.IsActive, userObj.IsActive);
+
+        user = await _usersCollection.FindOneAndUpdateAsync(filter, update);
+
+        if (user is not null)
         {
-            User? user = await _usersCollection.FindOneAndReplaceAsync(c => c.Id == userObj.Id, userObj);
-            isSuccess = user != null;
-        }
-        else
-        {
-            await _usersCollection.InsertOneAsync(userObj);
-            isSuccess = true;
+            return user;
         }
 
-        return isSuccess ? userObj : null;
+        if (userObj.RegularId.IsNullOrEmpty())
+        {
+            userObj.RegularId = Guid.NewGuid().ToString();
+            await _usersCollection.InsertOneAsync(userObj);
+            user = userObj;
+        }
+
+        return user;
+
     }
     // helper methods
-    private async Task<string> generateJwtToken(User user)
+    private async Task<string> GenerateJwtToken(User user)
     {
         //Generate token that is valid for 7 days
         var tokenHandler = new JwtSecurityTokenHandler();
@@ -86,5 +105,10 @@ public class UserService : IUserService
         });
 
         return tokenHandler.WriteToken(token);
+    }
+
+    public async Task<DeleteResult> DeleteUser(string id)
+    {
+        return await _usersCollection.DeleteOneAsync(x => x.RegularId == id);
     }
 }
