@@ -1,11 +1,11 @@
-﻿using Backend.Infrastructure.Models;
+﻿using Backend.Users.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Backend.Infrastructure.Filters;
+namespace Backend.Users.Filters;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-public class AuthorizeAttribute: Attribute, IAuthorizationFilter
+public class AuthorizeAttribute : Attribute, IAuthorizationFilter
 {
     public void OnAuthorization(AuthorizationFilterContext context)
     {

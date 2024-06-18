@@ -1,10 +1,13 @@
 using Backend.Helpers;
-using Backend.Infrastructure.Interfaces;
-using Backend.Infrastructure.Models;
-using Backend.Infrastructure.Services;
+using Backend.Users.Interfaces;
+using Backend.Users.Models;
+using Backend.Users.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,9 +15,28 @@ var builder = WebApplication.CreateBuilder(args);
 string connectionUri = builder.Configuration.GetConnectionString("Saver") ?? default!;
 
 var settings = MongoClientSettings.FromConnectionString(connectionUri);
+var appSettings = builder.Configuration.GetSection("JwtSettings").Get<AppSettings>() ?? default!;
 
+var key = Encoding.ASCII.GetBytes(appSettings.Secret);
 
 builder.Services.AddControllers();
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(x =>
+{
+    x.RequireHttpsMetadata = false;
+    x.SaveToken = true;
+    x.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuer = false,
+        ValidateAudience = false
+    };
+});
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(swagger =>
@@ -23,8 +45,8 @@ builder.Services.AddSwaggerGen(swagger =>
     swagger.SwaggerDoc("v1", new OpenApiInfo
     {
         Version = "v1",
-        Title = "JWT Token Authentication API",
-        Description = ".NET 8 Web API"
+        Title = "Saver",
+        Description = "Saving your money is our goal"
     });
     // To Enable authorization using Swagger (JWT)
     swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
@@ -53,7 +75,7 @@ builder.Services.AddSwaggerGen(swagger =>
     });
 });
 
-builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
+builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("JwtSettings"));
 builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();

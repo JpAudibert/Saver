@@ -1,4 +1,4 @@
-﻿namespace Backend.Infrastructure.Models;
+﻿namespace Backend.Users.Models;
 
 public class AppSettings
 {

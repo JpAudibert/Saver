@@ -1,5 +1,5 @@
-﻿using Backend.Infrastructure.Interfaces;
-using Backend.Infrastructure.Models;
+﻿using Backend.Users.Interfaces;
+using Backend.Users.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson;
@@ -17,12 +17,12 @@ public class JwtMiddleware(RequestDelegate next, IOptions<AppSettings> appSettin
     {
         var token = context.Request.Headers.Authorization.FirstOrDefault()?.Split(" ").Last();
         if (token != null)
-            attachUserToContext(context, userService, token);
+            AttachUserToContext(context, userService, token);
 
         await _next(context);
     }
 
-    private void attachUserToContext(HttpContext context, IUserService userService, string token)
+    private void AttachUserToContext(HttpContext context, IUserService userService, string token)
     {
         try
         {
@@ -38,10 +38,8 @@ public class JwtMiddleware(RequestDelegate next, IOptions<AppSettings> appSettin
             }, out SecurityToken validatedToken);
 
             var jwtToken = (JwtSecurityToken)validatedToken;
-            if (!ObjectId.TryParse(jwtToken.Claims.First(x => x.Type == "id").Value, out var userId))
-            {
-                throw new Exception("Invalid token");
-            }
+            var userId = jwtToken.Claims.First(x => x.Type == "regularId").Value.ToString();
+            
 
             // attach user to context on successful jwt validation
             context.Items["User"] = userService.GetById(userId);
