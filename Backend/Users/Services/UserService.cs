@@ -77,7 +77,7 @@ public class UserService : IUserService
 
             if (user is not null)
             {
-                return user;
+                return userObj;
             }
 
             if (userObj.RegularId.IsNullOrEmpty())
@@ -87,7 +87,7 @@ public class UserService : IUserService
                 user = userObj;
             }
 
-            return user;
+            return userObj;
         }
         catch (Exception ex)
         {

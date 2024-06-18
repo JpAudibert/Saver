@@ -2,7 +2,6 @@
 using Backend.Users.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
 
 namespace Backend.Users.Controllers;
 
@@ -34,6 +33,13 @@ public class UsersController(IUserService userService) : ControllerBase
         {
             return BadRequest(new { message = ex.Message });
         }
+    }
+
+    [Authorize]
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Get(string id)
+    {
+        return Ok(await _userService.GetById(id) ?? default);
     }
 
     [Authorize]
