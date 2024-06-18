@@ -11,17 +11,6 @@ public class UsersController(IUserService userService) : ControllerBase
 {
     private readonly IUserService _userService = userService;
 
-    [HttpPost("authenticate")]
-    public async Task<IActionResult> Authenticate(AuthenticateRequest model)
-    {
-        var response = await _userService.Authenticate(model);
-
-        if (response == null)
-            return Unauthorized(new { message = "Username or password is incorrect" });
-
-        return Ok(response);
-    }
-
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] User userObj)
     {
