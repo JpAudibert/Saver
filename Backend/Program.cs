@@ -2,6 +2,8 @@ using Backend.Helpers;
 using Backend.Users.Interfaces;
 using Backend.Users.Models;
 using Backend.Users.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -14,6 +16,12 @@ string connectionUri = builder.Configuration.GetConnectionString("Saver") ?? def
 var settings = MongoClientSettings.FromConnectionString(connectionUri);
 
 builder.Services.AddControllers();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme,
+        options => builder.Configuration.Bind("JwtSettings", options))
+    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,
+        options => builder.Configuration.Bind("CookieSettings", options));
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(swagger =>

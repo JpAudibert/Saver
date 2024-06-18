@@ -17,12 +17,12 @@ public class JwtMiddleware(RequestDelegate next, IOptions<AppSettings> appSettin
     {
         var token = context.Request.Headers.Authorization.FirstOrDefault()?.Split(" ").Last();
         if (token != null)
-            attachUserToContext(context, userService, token);
+            AttachUserToContext(context, userService, token);
 
         await _next(context);
     }
 
-    private void attachUserToContext(HttpContext context, IUserService userService, string token)
+    private void AttachUserToContext(HttpContext context, IUserService userService, string token)
     {
         try
         {
