@@ -1,4 +1,6 @@
+using Backend.Authentication.Interfaces;
 using Backend.Authentication.Models;
+using Backend.Authentication.Services;
 using Backend.Helpers;
 using Backend.Spendings.Interface;
 using Backend.Spendings.Repositories;
@@ -78,8 +80,10 @@ builder.Services.AddSwaggerGen(swagger =>
 });
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("JwtSettings"));
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddSingleton<MongoProvider>();
 
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddSingleton<ISpendingService, SpendingService>();
 
 var app = builder.Build();

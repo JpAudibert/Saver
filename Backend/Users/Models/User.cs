@@ -8,7 +8,7 @@ public class User
 {
     [BsonId]
     public ObjectId Id { get; set; } = default!;
-    public string? RegularId { get; set; } = default!;
+    public string RegularId { get; set; } = default!;
     public required string Name { get; set; }
     public required string Email { get; set; }
     public required string IdentificationNumber { get; set; }
