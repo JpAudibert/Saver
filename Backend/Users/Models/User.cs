@@ -14,5 +14,5 @@ public class User
     public required string IdentificationNumber { get; set; }
     public string Password { get; set; } = default!;
     public bool IsActive { get; set; }
-    public List<Transaction> Spendings { get; set; } = [];
+    public List<Transaction> Transactions { get; set; } = [];
 }
