@@ -2,8 +2,8 @@ using Backend.Authentication.Interfaces;
 using Backend.Authentication.Models;
 using Backend.Authentication.Services;
 using Backend.Helpers;
-using Backend.Spendings.Interface;
-using Backend.Spendings.Repositories;
+using Backend.Transactions.Interface;
+using Backend.Transactions.Repositories;
 using Backend.Users.Interfaces;
 using Backend.Users.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -84,7 +84,7 @@ builder.Services.AddSingleton<MongoProvider>();
 
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddSingleton<ISpendingService, SpendingService>();
+builder.Services.AddSingleton<ITransactionService, TransactionService>();
 
 var app = builder.Build();
 
