@@ -7,39 +7,39 @@ namespace Backend.Spendings.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class SpendingsController(ILogger<SpendingsController> logger, ISpendingRepository spendingRepository) : ControllerBase
+public class SpendingsController(ILogger<SpendingsController> logger, ISpendingService spendingRepository) : ControllerBase
 {
     private readonly ILogger<SpendingsController> _logger = logger;
-    private readonly ISpendingRepository _spendingRepository = spendingRepository;
+    private readonly ISpendingService _spendingRepository = spendingRepository;
 
-    [HttpGet(Name = "spendings")]
-    public ActionResult<IEnumerable<Spending>> GetAll()
-    {
-        return Ok(_spendingRepository.GetAllSpendings());
-    }
+    //[HttpGet(Name = "spendings")]
+    //public ActionResult<IEnumerable<Spending>> GetAll([FromHeader] string userId)
+    //{
+    //    return Ok(_spendingRepository.GetAllSpendings(userId));
+    //}
 
-    [HttpGet(Name = "spendings")]
-    public ActionResult<Spending> Get([FromRoute] ObjectId id)
-    {
-        return Ok(_spendingRepository.GetSpending(id));
-    }
+    //[HttpGet(Name = "spendings")]
+    //public ActionResult<Spending> Get([FromRoute] ObjectId id)
+    //{
+    //    return Ok(_spendingRepository.GetSpending(id));
+    //}
 
-    [HttpPost(Name = "spendings")]
-    public ActionResult<Spending> Post([FromBody] Spending spending)
-    {
-        return Ok(_spendingRepository.CreateSpending(spending));
-    }
+    //[HttpPost(Name = "spendings")]
+    //public ActionResult<Spending> Post([FromBody] Spending spending)
+    //{
+    //    return Ok(_spendingRepository.CreateSpending(spending));
+    //}
 
-    [HttpPut(Name = "spendings")]
-    public ActionResult<Spending> Put([FromRoute] ObjectId id, [FromBody] Spending spending)
-    {
-        return Ok(_spendingRepository.UpdateSpending(id, spending));
-    }
+    //[HttpPut(Name = "spendings")]
+    //public ActionResult<Spending> Put([FromRoute] ObjectId id, [FromBody] Spending spending)
+    //{
+    //    return Ok(_spendingRepository.UpdateSpending(id, spending));
+    //}
 
-    [HttpDelete(Name = "spendings")]
-    public ActionResult Delete([FromRoute] ObjectId id)
-    {
-        _spendingRepository.DeleteSpending(id);
-        return Ok();
-    }
+    //[HttpDelete(Name = "spendings")]
+    //public ActionResult Delete([FromRoute] ObjectId id)
+    //{
+    //    _spendingRepository.DeleteSpending(id);
+    //    return Ok();
+    //}
 }

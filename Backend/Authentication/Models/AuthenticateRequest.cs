@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Backend.Users.Models;
+namespace Backend.Authentication.Models;
 
 public class AuthenticateRequest
 {
