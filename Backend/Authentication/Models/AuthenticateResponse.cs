@@ -1,6 +1,7 @@
-﻿using MongoDB.Bson;
+﻿using Backend.Users.Models;
+using MongoDB.Bson;
 
-namespace Backend.Users.Models;
+namespace Backend.Authentication.Models;
 
 public class AuthenticateResponse(User user, string token)
 {

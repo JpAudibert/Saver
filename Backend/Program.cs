@@ -1,6 +1,8 @@
+using Backend.Authentication.Models;
 using Backend.Helpers;
+using Backend.Spendings.Interface;
+using Backend.Spendings.Repositories;
 using Backend.Users.Interfaces;
-using Backend.Users.Models;
 using Backend.Users.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -77,6 +79,8 @@ builder.Services.AddSwaggerGen(swagger =>
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("JwtSettings"));
 builder.Services.AddScoped<IUserService, UserService>();
+
+builder.Services.AddSingleton<ISpendingService, SpendingService>();
 
 var app = builder.Build();
 

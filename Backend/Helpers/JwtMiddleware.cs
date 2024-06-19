@@ -1,8 +1,7 @@
-﻿using Backend.Users.Interfaces;
-using Backend.Users.Models;
+﻿using Backend.Authentication.Models;
+using Backend.Users.Interfaces;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using MongoDB.Bson;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
