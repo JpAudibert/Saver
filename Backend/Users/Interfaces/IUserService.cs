@@ -1,12 +1,12 @@
 ﻿using Backend.Users.Models;
-using MongoDB.Driver;
 
 namespace Backend.Users.Interfaces;
 
 public interface IUserService
 {
-    Task<IEnumerable<User>> GetAll();
-    Task<User?> GetById(string id);
-    Task<User?> AddAndUpdateUser(User userObj);
-    Task<DeleteResult> DeleteUser(string id);
+    Task<IEnumerable<User>> GetAllUsers();
+    Task<User> GetUserById(Guid id);
+    Task<User?> AddUser(User userObj);
+    Task<User?> UpdateUser(Guid id, User userObj);
+    Task DeleteUser(Guid id);
 }
