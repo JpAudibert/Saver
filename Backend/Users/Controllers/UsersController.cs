@@ -24,7 +24,8 @@ public class UsersController(IUserService userService) : ControllerBase
         }
     }
 
-    [HttpPut("id")]
+    [Authorize]
+    [HttpPut("{id}")]
     public async Task<IActionResult> Put(Guid id, [FromBody] User userObj)
     {
         try
@@ -41,7 +42,7 @@ public class UsersController(IUserService userService) : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> Get(Guid id)
     {
-        return Ok(await _userService.GetUserById(id) ?? default);
+        return Ok(await _userService.GetUserById(id));
     }
 
     [Authorize]

@@ -8,22 +8,17 @@ using Backend.Helpers;
 using Backend.Users.Interfaces;
 using Backend.Users.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddDbContext<SaverContext>(service =>
-{
-    service.UseNpgsql(builder.Configuration.GetConnectionString("Saver"));
-});
-
 var appSettings = builder.Configuration.GetSection("JwtSettings").Get<AppSettings>() ?? default!;
 
 var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+
+builder.Services.AddSingleton(builder.Configuration);
 
 builder.Services.AddControllers();
 builder.Services.AddAuthentication(x =>
@@ -82,11 +77,12 @@ builder.Services.AddSwaggerGen(swagger =>
 });
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("JwtSettings"));
-builder.Services.AddSingleton<MongoProvider>();
 
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddSingleton<IFinanceService, FinanceService>();
+builder.Services.AddScoped<IFinanceService, FinanceService>();
+
+builder.Services.AddScoped<SaverContext>();
 
 var app = builder.Build();
 

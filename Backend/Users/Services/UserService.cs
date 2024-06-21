@@ -1,32 +1,58 @@
-﻿using Backend.Users.Interfaces;
+﻿using Backend.EF;
+using Backend.Users.Interfaces;
 using Backend.Users.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Users.Services;
 
-public class UserService() : IUserService
+public class UserService(SaverContext saverContext) : IUserService
 {
-    public Task<User?> AddUser(User userObj)
+    private SaverContext _saverContext = saverContext;
+
+    public async Task<User?> AddUser(User userObj)
     {
-        throw new NotImplementedException();
+        await _saverContext.Users.AddAsync(userObj);
+        await _saverContext.SaveChangesAsync();
+
+        return userObj;
     }
 
-    public Task DeleteUser(Guid id)
+    public async Task DeleteUser(Guid id)
     {
-        throw new NotImplementedException();
+        await _saverContext.Users.Where(user => user.Id == id).ExecuteDeleteAsync();
+        await _saverContext.SaveChangesAsync();
     }
 
-    public Task<IEnumerable<User>> GetAllUsers()
+    public async Task<IEnumerable<User>> GetAllUsers()
     {
-        throw new NotImplementedException();
+        return await _saverContext.Users.ToListAsync();
     }
 
-    public Task<User> GetUserById(Guid id)
+    public async Task<User?> GetUserById(Guid id)
     {
-        throw new NotImplementedException();
+        return await _saverContext.Users.FirstOrDefaultAsync(user => user.Id == id);
     }
 
-    public Task<User?> UpdateUser(Guid id, User userObj)
+    public async Task<User?> UpdateUser(Guid id, User userObj)
     {
-        throw new NotImplementedException();
+        User? user = await _saverContext.Users.FirstOrDefaultAsync(user => user.Id == id);
+
+        User toUpdateUser = new()
+        {
+            Id = id,
+            Email = userObj.Email,
+            Name = userObj.Name,
+            Password = userObj.Password,
+            IsActive = userObj.IsActive,
+            IdentificationNumber = userObj.IdentificationNumber
+        };
+
+        user = toUpdateUser;
+
+        _saverContext.Users.Update(user);
+
+        await _saverContext.SaveChangesAsync();
+
+        return toUpdateUser;
     }
 }
