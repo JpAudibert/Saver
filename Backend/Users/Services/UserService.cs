@@ -5,54 +5,55 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Users.Services;
 
-public class UserService(SaverContext saverContext) : IUserService
+public class UserService(IConfiguration configuration) : IUserService
 {
-    private SaverContext _saverContext = saverContext;
-
+    private readonly IConfiguration _configuration = configuration;
     public async Task<User?> AddUser(User userObj)
     {
-        await _saverContext.Users.AddAsync(userObj);
-        await _saverContext.SaveChangesAsync();
+        using SaverContext saverContext = new(_configuration);
+
+        await saverContext.Users.AddAsync(userObj);
+        await saverContext.SaveChangesAsync();
 
         return userObj;
+
     }
 
     public async Task DeleteUser(Guid id)
     {
-        await _saverContext.Users.Where(user => user.Id == id).ExecuteDeleteAsync();
-        await _saverContext.SaveChangesAsync();
+        using SaverContext saverContext = new(_configuration);
+
+        await saverContext.Users.Where(user => user.Id == id).ExecuteDeleteAsync();
+        await saverContext.SaveChangesAsync();
     }
 
     public async Task<IEnumerable<User>> GetAllUsers()
     {
-        return await _saverContext.Users.ToListAsync();
+        using SaverContext saverContext = new(_configuration);
+
+        return await saverContext.Users.ToListAsync();
     }
 
     public async Task<User?> GetUserById(Guid id)
     {
-        return await _saverContext.Users.FirstOrDefaultAsync(user => user.Id == id);
+        using SaverContext saverContext = new(_configuration);
+
+        return await saverContext.Users.FirstOrDefaultAsync(user => user.Id == id);
     }
 
     public async Task<User?> UpdateUser(Guid id, User userObj)
     {
-        User? user = await _saverContext.Users.FirstOrDefaultAsync(user => user.Id == id);
+        using SaverContext saverContext = new(_configuration);
 
-        User toUpdateUser = new()
-        {
-            Id = id,
-            Email = userObj.Email,
-            Name = userObj.Name,
-            Password = userObj.Password,
-            IsActive = userObj.IsActive,
-            IdentificationNumber = userObj.IdentificationNumber
-        };
+        var user = await saverContext.Users.SingleAsync(user => user.Id == id);
+        user.Name = userObj.Name;
+        user.Email = userObj.Email;
+        user.Password = userObj.Password;
+        user.IdentificationNumber = userObj.IdentificationNumber;
+        user.IsActive = userObj.IsActive;
 
-        user = toUpdateUser;
+        await saverContext.SaveChangesAsync();
 
-        _saverContext.Users.Update(user);
-
-        await _saverContext.SaveChangesAsync();
-
-        return toUpdateUser;
+        return user;
     }
 }

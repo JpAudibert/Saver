@@ -9,6 +9,9 @@ public class SaverContext : DbContext
 {
     private readonly IConfiguration _configuration;
 
+    public virtual DbSet<User> Users { get; set; } = default!;
+    public virtual DbSet<Finance> Finances { get; set; } = default!;
+
     public SaverContext(IConfiguration configuration)
     {
         _configuration = configuration;
@@ -19,11 +22,9 @@ public class SaverContext : DbContext
         _configuration = configuration;
     }
 
-    public virtual DbSet<User> Users { get; set; } = default!;
-    public virtual DbSet<Finance> Finances { get; set; } = default!;
-
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
+        base.OnConfiguring(optionsBuilder);
         if(!optionsBuilder.IsConfigured)
         {
             optionsBuilder.UseNpgsql(_configuration.GetConnectionString("Saver")).EnableSensitiveDataLogging();
@@ -32,6 +33,7 @@ public class SaverContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfiguration(new UserType());
         modelBuilder.ApplyConfiguration(new FinanceType());
     }
