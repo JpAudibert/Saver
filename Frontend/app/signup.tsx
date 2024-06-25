@@ -17,7 +17,7 @@ export default function Index() {
 
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{ width: '100%', left: '-23%' }}
+        style={{ width: '100%', left: '-25%' }}
       >
         <LoginContainer container="lg">
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

@@ -18,7 +18,7 @@ export const LoginContainer = styled.View<LoginContainerProps>`
     props.container === 'lg'
       ? '550px'
       : props.container === 'md'
-      ? '450px'
+      ? '410px'
       : '350px'};
   width: 150%;
   border-radius: 700px 700px 0 0;
