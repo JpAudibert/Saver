@@ -14,6 +14,8 @@ export const ButtonContainer = styled.Pressable<{ fill: boolean }>`
   border-color: ${Colors.default.secondary};
   border-width: 2px;
   border-radius: 23px;
+
+  margin: 20px;
 `;
 export const ButtonText = styled.Text<{ fill: boolean }>`
   font-weight: bold;

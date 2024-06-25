@@ -13,18 +13,20 @@ import {
 export default function Index() {
   return (
     <PageContainer>
-      <BackHeader text="Log In" />
+      <BackHeader text="Sign Up" />
 
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'position' : 'height'}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ width: '100%', left: '-23%' }}
       >
-        <LoginContainer container="md">
+        <LoginContainer container="lg">
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <LoginActionsContainer>
+              <InputText label="Name" />
               <InputText label="Email" />
               <InputText label="Password" />
-              <Button title="Log In" onPress={() => console.log('login')} />
+              <InputText label="Confirm Password" />
+              <Button title="Sign Up" onPress={() => console.log('signup')} />
             </LoginActionsContainer>
           </TouchableWithoutFeedback>
         </LoginContainer>

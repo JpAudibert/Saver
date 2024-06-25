@@ -27,5 +27,6 @@ export const Colors = {
     background: backgroundColor,
     spending: spendingColor,
     accent: accentColor,
+    gray: '#687076',
   },
 };

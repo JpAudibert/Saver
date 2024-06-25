@@ -1,13 +1,27 @@
 import { Colors } from '@/constants/Colors';
 import styled from 'styled-components/native';
 
-export const LoginLayout = styled.View`
-  height: 50%;
-  width: 120%;
-  border-radius: 500px 500px 0 0;
-  position: 'absolute';
-  top: 50%;
-  right: 10%;
+interface LoginContainerProps {
+  container: 'lg' | 'md' | 'sm';
+}
+
+export const PageContainer = styled.View`
+  flex: 1;
+
+  align-items: center;
+
+  justify-content: space-between;
+`;
+
+export const LoginContainer = styled.View<LoginContainerProps>`
+  min-height: ${(props) =>
+    props.container === 'lg'
+      ? '550px'
+      : props.container === 'md'
+      ? '450px'
+      : '350px'};
+  width: 150%;
+  border-radius: 700px 700px 0 0;
   background-color: ${Colors.default.main};
 `;
 
@@ -16,6 +30,8 @@ export const HeaderText = styled.Text`
   font-size: 48px;
   font-weight: bold;
   letter-spacing: 0.5;
+
+  margin-top: 80px;
 `;
 
 export const SloganText = styled.Text`
@@ -28,6 +44,4 @@ export const SloganText = styled.Text`
 export const HeaderContainer = styled.View`
   align-items: center;
   justify-content: center;
-
-  top: 20%;
 `;
