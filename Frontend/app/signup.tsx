@@ -42,7 +42,7 @@ function getValidationErrors(err: Yup.ValidationError): Errors {
 export default function Index() {
   const formRef = useRef<FormHandles>(null);
   const cpfInputRef = useRef<TextInput>(null);
-  const email = useRef<TextInput>(null);
+  const emailInputRef = useRef<TextInput>(null);
   const passwordInputRef = useRef<TextInput>(null);
   const confirmPasswordInputRef = useRef<TextInput>(null);
 
@@ -124,7 +124,8 @@ export default function Index() {
                   placeholder="CPF"
                   autoCorrect={false}
                   returnKeyType="next"
-                  onSubmitEditing={() => email.current?.focus()}
+                  onSubmitEditing={() => emailInputRef.current?.focus()}
+                  ref={cpfInputRef}
                 />
                 <InputText
                   name="email"
@@ -134,6 +135,7 @@ export default function Index() {
                   keyboardType="email-address"
                   returnKeyType="next"
                   onSubmitEditing={() => passwordInputRef.current?.focus()}
+                  ref={emailInputRef}
                 />
                 <InputText
                   name="password"
@@ -143,6 +145,7 @@ export default function Index() {
                   onSubmitEditing={() =>
                     confirmPasswordInputRef.current?.focus()
                   }
+                  ref={passwordInputRef}
                 />
                 <InputText
                   name="confirmPassword"
@@ -150,6 +153,7 @@ export default function Index() {
                   secureTextEntry
                   returnKeyType="send"
                   onSubmitEditing={() => formRef.current?.submitForm()}
+                  ref={confirmPasswordInputRef}
                 />
                 <Button
                   title="Sign Up"
