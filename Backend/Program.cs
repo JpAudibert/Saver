@@ -1,29 +1,29 @@
 using Backend.Authentication.Interfaces;
 using Backend.Authentication.Models;
 using Backend.Authentication.Services;
+using Backend.EF;
+using Backend.Finances.Interface;
+using Backend.Finances.Services;
 using Backend.Helpers;
-using Backend.Spendings.Interface;
-using Backend.Spendings.Repositories;
 using Backend.Users.Interfaces;
 using Backend.Users.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using MongoDB.Bson;
-using MongoDB.Driver;
 using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-string connectionUri = builder.Configuration.GetConnectionString("Saver") ?? default!;
-
-var settings = MongoClientSettings.FromConnectionString(connectionUri);
 var appSettings = builder.Configuration.GetSection("JwtSettings").Get<AppSettings>() ?? default!;
 
 var key = Encoding.ASCII.GetBytes(appSettings.Secret);
 
-builder.Services.AddControllers();
+builder.Services.AddSingleton(builder.Configuration);
+
+builder.Services
+    .AddControllers()
+    .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -80,30 +80,14 @@ builder.Services.AddSwaggerGen(swagger =>
 });
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("JwtSettings"));
-builder.Services.AddSingleton<MongoProvider>();
 
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddSingleton<ISpendingService, SpendingService>();
+builder.Services.AddScoped<IFinanceService, FinanceService>();
+
+builder.Services.AddScoped<SaverContext>();
 
 var app = builder.Build();
-
-// Set the ServerApi field of the settings object to set the version of the Stable API on the client
-settings.ServerApi = new ServerApi(ServerApiVersion.V1);
-
-// Create a new client and connect to the server
-var client = new MongoClient(settings);
-
-// Send a ping to confirm a successful connection
-try
-{
-    var result = client.GetDatabase("admin").RunCommand<BsonDocument>(new BsonDocument("ping", 1));
-    Console.WriteLine("Pinged your deployment. You successfully connected to MongoDB!");
-}
-catch (Exception ex)
-{
-    Console.WriteLine(ex);
-}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
