@@ -1,70 +1,69 @@
-﻿using Backend.Helpers;
+﻿using Backend.EF;
+using Backend.Extensions;
 using Backend.Users.Interfaces;
 using Backend.Users.Models;
-using Microsoft.IdentityModel.Tokens;
-using MongoDB.Bson;
-using MongoDB.Driver;
+using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Users.Services;
 
-public class UserService(ILogger<UserService> logger, MongoProvider mongoProvider) : IUserService
+public class UserService(IConfiguration configuration) : IUserService
 {
-    private readonly ILogger<UserService> _logger = logger;
-    private readonly MongoProvider _mongoProvider = mongoProvider;
-
-    public async Task<IEnumerable<User>> GetAll()
+    private readonly IConfiguration _configuration = configuration;
+    public async Task<User?> AddUser(User userObj)
     {
-        return await _mongoProvider.UsersCollection.FindAsync(x => x.IsActive == true).Result.ToListAsync();
-    }
+        using SaverContext saverContext = new(_configuration);
 
-    public async Task<User?> GetById(string id)
-    {
-        return await _mongoProvider.UsersCollection.FindAsync(x => x.RegularId == id).Result.FirstOrDefaultAsync();
-    }
-
-    public async Task<User?> AddAndUpdateUser(User userObj)
-    {
-        try
+        User newUser = new()
         {
-            User? user = null;
+            Id = Guid.NewGuid(),
+            Email = userObj.Email,
+            Name = userObj.Name.Capitalize(),
+            Password = userObj.Password,
+            IdentificationNumber = userObj.IdentificationNumber,
+            IsActive = userObj.IsActive
+        };
 
-            List<KeyValuePair<string, object>> filterDictionary = [
-                new KeyValuePair<string, object>("RegularId", userObj.RegularId!),
-            ];
+        await saverContext.Users.AddAsync(newUser);
+        await saverContext.SaveChangesAsync();
 
-            BsonDocument filter = new(filterDictionary);
-            var update = Builders<User>.Update
-                .Set(x => x.Name, userObj.Name)
-                .Set(x => x.Email, userObj.Email)
-                .Set(x => x.IdentificationNumber, userObj.IdentificationNumber)
-                .Set(x => x.Password, userObj.Password)
-                .Set(x => x.IsActive, userObj.IsActive);
-
-            user = await _mongoProvider.UsersCollection.FindOneAndUpdateAsync(filter, update);
-
-            if (user is not null)
-            {
-                return userObj;
-            }
-
-            if (userObj.RegularId.IsNullOrEmpty())
-            {
-                userObj.RegularId = Guid.NewGuid().ToString();
-                await _mongoProvider.UsersCollection.InsertOneAsync(userObj);
-                user = userObj;
-            }
-
-            return userObj;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error occurred while adding or updating user.");
-            throw;
-        }
+        return newUser;
     }
 
-    public async Task<DeleteResult> DeleteUser(string id)
+    public async Task DeleteUser(Guid id)
     {
-        return await _mongoProvider.UsersCollection.DeleteOneAsync(x => x.RegularId == id);
+        using SaverContext saverContext = new(_configuration);
+
+        await saverContext.Users.Where(user => user.Id == id).ExecuteDeleteAsync();
+        await saverContext.SaveChangesAsync();
+    }
+
+    public async Task<IEnumerable<User>> GetAllUsers()
+    {
+        using SaverContext saverContext = new(_configuration);
+
+        return await saverContext.Users.ToListAsync();
+    }
+
+    public async Task<User?> GetUserById(Guid id)
+    {
+        using SaverContext saverContext = new(_configuration);
+
+        return await saverContext.Users.FirstOrDefaultAsync(user => user.Id == id);
+    }
+
+    public async Task<User?> UpdateUser(Guid id, User userObj)
+    {
+        using SaverContext saverContext = new(_configuration);
+
+        var user = await saverContext.Users.SingleAsync(user => user.Id == id);
+        user.Name = userObj.Name.Capitalize();
+        user.Email = userObj.Email;
+        user.Password = userObj.Password;
+        user.IdentificationNumber = userObj.IdentificationNumber;
+        user.IsActive = userObj.IsActive;
+
+        await saverContext.SaveChangesAsync();
+
+        return user;
     }
 }
