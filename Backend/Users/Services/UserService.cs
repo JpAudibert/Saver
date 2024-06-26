@@ -1,4 +1,5 @@
 ﻿using Backend.EF;
+using Backend.Extensions;
 using Backend.Users.Interfaces;
 using Backend.Users.Models;
 using Microsoft.EntityFrameworkCore;
@@ -12,11 +13,20 @@ public class UserService(IConfiguration configuration) : IUserService
     {
         using SaverContext saverContext = new(_configuration);
 
-        await saverContext.Users.AddAsync(userObj);
+        User newUser = new()
+        {
+            Id = Guid.NewGuid(),
+            Email = userObj.Email,
+            Name = userObj.Name.Capitalize(),
+            Password = userObj.Password,
+            IdentificationNumber = userObj.IdentificationNumber,
+            IsActive = userObj.IsActive
+        };
+
+        await saverContext.Users.AddAsync(newUser);
         await saverContext.SaveChangesAsync();
 
-        return userObj;
-
+        return newUser;
     }
 
     public async Task DeleteUser(Guid id)
@@ -46,7 +56,7 @@ public class UserService(IConfiguration configuration) : IUserService
         using SaverContext saverContext = new(_configuration);
 
         var user = await saverContext.Users.SingleAsync(user => user.Id == id);
-        user.Name = userObj.Name;
+        user.Name = userObj.Name.Capitalize();
         user.Email = userObj.Email;
         user.Password = userObj.Password;
         user.IdentificationNumber = userObj.IdentificationNumber;

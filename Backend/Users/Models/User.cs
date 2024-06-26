@@ -10,5 +10,5 @@ public class User
     public required string IdentificationNumber { get; set; }
     public string Password { get; set; } = default!;
     public bool IsActive { get; set; }
-    public IEnumerable<Finance>? Finances { get; set; } = [];
+    public IList<Finance> Finances { get; set; } = [];
 }

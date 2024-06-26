@@ -16,7 +16,7 @@ public class UserType : IEntityTypeConfiguration<User>
         builder.Property(user => user.IdentificationNumber).HasColumnType("varchar(11)");
         builder.Property(user => user.Password).HasColumnType("varchar");
         builder.Property(user => user.IsActive).HasColumnType("boolean");
-        builder.HasMany(user => user.Finances).WithOne().HasForeignKey(finance => finance.Id);
+        builder.HasMany(user => user.Finances).WithOne(finance => finance.User).HasForeignKey(finance => finance.UserId);
         builder.Property<DateTime>("CreatedAt").ValueGeneratedOnAdd().HasDefaultValueSql("now()");
         builder.Property<DateTime>("UpdatedAt").ValueGeneratedOnAddOrUpdate().HasDefaultValueSql("now()");
     }

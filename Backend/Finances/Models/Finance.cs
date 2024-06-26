@@ -1,4 +1,5 @@
 ﻿using Backend.Users.Models;
+using System.Text.Json.Serialization;
 
 namespace Backend.Finances.Models;
 
@@ -8,5 +9,8 @@ public class Finance
     public decimal Amount { get; set; } = default!;
     public string Description { get; set; } = default!;
     public string Type { get; set; } = default!;
-    public User? User { get; set; }
+    [JsonIgnore]
+    public Guid? UserId { get; set; } = default!;
+    [JsonIgnore]
+    public User? User { get; set; } = default!;
 }

@@ -1,6 +1,7 @@
 ﻿using Backend.Authentication.Filters;
 using Backend.Finances.Interface;
 using Backend.Finances.Models;
+using Backend.Users.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Finances.Controllers;
@@ -13,37 +14,33 @@ public class FinancesController(IFinanceService financeService) : ControllerBase
     private readonly IFinanceService _financeService = financeService;
 
     [HttpGet]
-    public ActionResult<IEnumerable<Finance>> GetAllFinances([FromHeader] string userId)
+    public async Task<ActionResult<User>> GetAllFinances([FromHeader] Guid userId)
     {
-        return Ok();
-        //return Ok(_financeService.GetAllFinancesForUser(userId));
+        return Ok(await _financeService.GetAllFinancesForUser(userId));
     }
 
-    [HttpGet("financeId")]
-    public ActionResult<Finance> GetFinance([FromHeader] string userId, string financeId)
+    [HttpGet("{financeId}")]
+    public async Task<ActionResult<Finance>> GetFinance([FromHeader] Guid userId, Guid financeId)
     {
-        return Ok();
-        //return Ok(_financeService.GetFinanceForUser(userId, financeId));
+        return Ok(await _financeService.GetFinanceForUser(userId, financeId));
     }
 
     [HttpPost]
-    public ActionResult<Finance> PostFinances([FromHeader] string userId, [FromBody] Finance finance)
+    public async Task<ActionResult<Finance>> PostFinances([FromHeader] Guid userId, [FromBody] Finance finance)
     {
-        return Ok();
-        //return Ok(_financeService.CreateFinanceForUser(userId, finance));
+        return Ok(await _financeService.CreateFinanceForUser(userId, finance));
     }
 
-    [HttpPut("financeId")]
-    public ActionResult<Finance> PutFinances([FromHeader] string userId, string financeId, [FromBody] Finance finance)
+    [HttpPut("{financeId}")]
+    public async Task<ActionResult<User>> PutFinances([FromHeader] Guid userId, Guid financeId, [FromBody] Finance finance)
     {
-        return Ok();
-        //return Ok(_financeService.UpdateFinanceForUser(userId, financeId, finance));
+        return Ok(await _financeService.UpdateFinanceForUser(userId, financeId, finance));
     }
 
-    [HttpDelete("financeId")]
-    public ActionResult DeleteFinances([FromHeader] string userId, string financeId)
+    [HttpDelete("{financeId}")]
+    public async Task<ActionResult> DeleteFinances([FromHeader] Guid userId, Guid financeId)
     {
-        //_financeService.DeleteFinanceForUser(userId, financeId);
+        await _financeService.DeleteFinanceForUser(userId, financeId);
         return Ok();
     }
 }

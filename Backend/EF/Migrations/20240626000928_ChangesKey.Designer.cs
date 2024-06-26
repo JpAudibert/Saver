@@ -3,6 +3,7 @@ using System;
 using Backend.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Backend.EF.Migrations
 {
     [DbContext(typeof(SaverContext))]
-    partial class SaverContextModelSnapshot : ModelSnapshot
+    [Migration("20240626000928_ChangesKey")]
+    partial class ChangesKey
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,7 +28,6 @@ namespace Backend.EF.Migrations
             modelBuilder.Entity("Backend.Finances.Models.Finance", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<double>("Amount")
@@ -53,8 +55,6 @@ namespace Backend.EF.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("finances", (string)null);
                 });
@@ -103,7 +103,9 @@ namespace Backend.EF.Migrations
                 {
                     b.HasOne("Backend.Users.Models.User", "User")
                         .WithMany("Finances")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
