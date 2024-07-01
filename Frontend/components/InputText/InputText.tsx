@@ -27,7 +27,6 @@ const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
   { name, mask = null, ...rest },
   ref
 ) => {
-  const [field, setField] = useState('');
   const inputElementRef = useRef<any>(null);
   const {
     registerField,
@@ -50,22 +49,6 @@ const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
     setIsFilled(!!inputValueRef.current.value);
   }, []);
 
-  const handleMask = useCallback(
-    (value: string) => {
-      console.log(value);
-      if (mask === 'cpf') {
-        return value
-          .replace(/\D/g, '') // substitui qualquer caracter que nao seja numero por nada
-          .replace(/(\d{3})(\d)/, '$1.$2') // coloca ponto entre o terceiro e o quarto digito
-          .replace(/(\d{3})(\d)/, '$1.$2') // coloca ponto entre o setimo e o oitavo digito
-          .replace(/(\d{3})(\d{1,2})/, '$1-$2') // coloca um hifen entre o terceiro e o quarto digito
-          .replace(/(-\d{2})\d+?$/, '$1'); // Impede que mais dígitos sejam inseridos
-      }
-      return value;
-    },
-    [mask]
-  );
-
   useImperativeHandle(ref, () => ({
     focus() {
       inputElementRef?.current?.focus();
@@ -78,16 +61,15 @@ const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
       ref: inputValueRef.current,
       path: 'value',
       setValue: (ref: any, value: string) => {
-        const newValue = handleMask(value);
-        setField(newValue);
-        inputElementRef.current.setNativeProps({ text: newValue });
+        inputValueRef.current.value = value;
+        inputElementRef.current.setNativeProps({ text: value });
       },
       clearValue() {
-        setField('');
+        inputValueRef.current.value = '';
         inputElementRef.current.clear();
       },
     });
-  }, [fieldName, registerField]);
+  }, [fieldName, registerField, inputValueRef.current.value]);
 
   return (
     <Container isFocused={isFocused} isErrored={!!error}>
@@ -98,9 +80,9 @@ const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
         onFocus={handleInputFocus}
         onBlur={handleInputBlur}
         onChangeText={(value) => {
-          setField(handleMask(value));
+          inputValueRef.current.value = value;
+          // inputElementRef.current.value = handleMask(value);
         }}
-        value={field}
         {...rest}
       />
     </Container>
