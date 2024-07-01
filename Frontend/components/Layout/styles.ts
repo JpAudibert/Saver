@@ -29,7 +29,7 @@ export const HeaderText = styled.Text`
   color: ${Colors.default.main};
   font-size: 48px;
   font-weight: bold;
-  letter-spacing: 0.5;
+  letter-spacing: 0.5px;
 
   margin-top: 80px;
 `;

@@ -22,5 +22,5 @@ export const ButtonText = styled.Text<{ fill: boolean }>`
   font-size: 16px;
   color: ${(props) =>
     props.fill ? Colors.default.text : Colors.default.secondary};
-  line-height: 21;
+  line-height: 21px;
 `;
