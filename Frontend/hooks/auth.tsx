@@ -73,13 +73,13 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       email,
       password,
     });
-    const { token, userId, name, responseEmail } = response.data; // await AsyncStorage.multiSet([
+    const { token, id, name, responseEmail } = response.data; // await AsyncStorage.multiSet([
     //   ['@GoBarber:token', token],
     //   ['@GoBarber:user', JSON.stringify(user)],
     // ]);
     api.defaults.headers.authorization = `Bearer ${token}`;
-    api.defaults.headers.userId = `${userId}`;
-    setData({ token, user: { id: userId, name, email: responseEmail } });
+    api.defaults.headers.userId = `${id}`;
+    setData({ token, user: { id, name, email: responseEmail } });
   }, []);
 
   const signOut = useCallback(async () => {
