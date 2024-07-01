@@ -11,7 +11,6 @@ interface User {
   id: string;
   name: string;
   email: string;
-  avatar_url: string;
 }
 
 interface AuthState {
@@ -70,17 +69,17 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const signIn = useCallback(async ({ email, password }: SignInCredentials) => {
-    const response = await api.post('sessions', {
+    const response = await api.post('authentication', {
       email,
       password,
     });
-    const { token, user } = response.data;
+    const { token, id, name, responseEmail } = response.data;
     // await AsyncStorage.multiSet([
     //   ['@GoBarber:token', token],
     //   ['@GoBarber:user', JSON.stringify(user)],
     // ]);
     api.defaults.headers.authorization = `Bearer ${token}`;
-    setData({ token, user });
+    setData({ token, user: { id, name, email: responseEmail } });
   }, []);
 
   const signOut = useCallback(async () => {
@@ -103,11 +102,14 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const signUp = useCallback(
     async ({ email, password, cpf, name }: SignUpCredentials) => {
       await api.post('users', {
+        name,
         email,
         password,
-        cpf,
-        name,
+        identificationNumber: cpf,
+        isActive: true,
       });
+
+      await signIn({ email, password });
     },
     []
   );

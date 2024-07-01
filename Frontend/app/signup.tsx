@@ -4,6 +4,7 @@ import InputText from '@/components/InputText/InputText';
 import { LoginContainer, PageContainer } from '@/components/Layout/styles';
 import { LoginActionsContainer } from '@/components/LoginActions/styles';
 import { useAuth } from '@/hooks/auth';
+import { router } from 'expo-router';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/mobile';
 import { useCallback, useRef } from 'react';
@@ -80,9 +81,10 @@ export default function Index() {
         await signUp({
           email,
           password,
-          cpf,
+          cpf: cpf.replace(/\D/g, ''),
           name,
         });
+        router.navigate('home');
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
@@ -123,7 +125,9 @@ export default function Index() {
                   name="cpf"
                   placeholder="CPF"
                   autoCorrect={false}
+                  mask="cpf"
                   returnKeyType="next"
+                  keyboardType="numeric"
                   onSubmitEditing={() => emailInputRef.current?.focus()}
                   ref={cpfInputRef}
                 />

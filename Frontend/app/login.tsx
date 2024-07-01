@@ -6,6 +6,7 @@ import { LoginActionsContainer } from '@/components/LoginActions/styles';
 import { useAuth } from '@/hooks/auth';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/mobile';
+import { router } from 'expo-router';
 import { useCallback, useRef } from 'react';
 import {
   Alert,
@@ -62,6 +63,8 @@ export default function Index() {
           email: email,
           password: password,
         });
+
+        router.navigate('home');
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
