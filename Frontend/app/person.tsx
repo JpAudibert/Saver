@@ -50,12 +50,26 @@ export default function Person() {
         }).catch(err => {
             console.log(err);
         });
-    },[]);
+    }, []);
 
-    const handleUpdate = useCallback(async (data: PersonData): Promise<void> => {
+    const handleUpdate = useCallback(async ({name, email, identificationNumber, password, confirmPassword}: PersonData): Promise<void> => {
         try {
-            console.log(data);
-            
+            if (name === '') {
+                name = person.name;
+            }
+
+            if (identificationNumber === '') {
+                identificationNumber = person.identificationNumber;
+            }
+
+            if (email === '') {
+                email = person.email;
+            }
+
+            if (password === '') {
+                password = person.password;
+            }
+
             formRef.current?.setErrors({});
             const schema = Yup.object().shape({
                 name: Yup.string().required('Name is required'),
@@ -70,25 +84,29 @@ export default function Person() {
                 ),
             });
 
-            // await schema.validate(
-            //     { email, password, confirmPassword, cpf, name },
+            console.log("validating schema");
+            
+            // let result = await schema.validate(
+            //     { email, password, confirmPassword, identificationNumber, name },
             //     {
             //         abortEarly: false,
             //     }
             // );
 
-            // const formData = {
-            //     name,
-            //     email,
-            //     password,
-            //     identificationNumber: cpf,
-            //     isActive: true
-            // }
+            // console.log(result);
 
-            // console.log(formData);
-            
+            const formData = {
+                name,
+                email,
+                password,
+                identificationNumber,
+                isActive: true
+            }
 
-            // await api.put(`/users/${api.defaults.headers.userId}`, formData);
+            console.log(formData);
+
+
+            await api.put(`/users/${api.defaults.headers.userId}`, formData);
 
             router.navigate('home');
         } catch (err) {
@@ -96,7 +114,7 @@ export default function Person() {
                 const errors = getValidationErrors(err);
 
                 formRef.current?.setErrors(errors);
-                
+
                 return;
             }
 
@@ -105,11 +123,11 @@ export default function Person() {
                 'Please check the informed data and try again.'
             );
         }
-    }, [])
+    }, [person])
 
     return (
         <PageContainer>
-            <BackHeader text="Sign Up" />
+            <BackHeader text="Home" />
 
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -120,7 +138,7 @@ export default function Person() {
                         <Form ref={formRef} initialData={
                             {
                                 name: person.name,
-                                cpf: person.identificationNumber,
+                                identificationNumber: person.identificationNumber,
                                 email: person.email,
                                 password: person.password,
                                 confirmPassword: ''
@@ -132,17 +150,17 @@ export default function Person() {
                                     placeholder="Name"
                                     autoCorrect={false}
                                     returnKeyType="next"
-                                    autoFocus={!!person.name}
+                                    onSubmitEditing={() => cpfInputRef.current?.focus()}
                                 />
                                 <InputText
-                                    name="cpf"
-                                    placeholder="CPF"
+                                    name="identificationNumber"
+                                    placeholder="identificationNumber"
                                     autoCorrect={false}
                                     mask="cpf"
                                     returnKeyType="next"
                                     keyboardType="numeric"
                                     ref={cpfInputRef}
-                                    autoFocus={!!person.identificationNumber}
+                                    onSubmitEditing={() => emailInputRef.current?.focus()}
                                 />
                                 <InputText
                                     name="email"
@@ -152,7 +170,7 @@ export default function Person() {
                                     keyboardType="email-address"
                                     returnKeyType="next"
                                     ref={emailInputRef}
-                                    autoFocus={!!person.email}
+                                    onSubmitEditing={() => passwordInputRef.current?.focus()}
                                 />
                                 <InputText
                                     name="password"
@@ -160,7 +178,7 @@ export default function Person() {
                                     secureTextEntry
                                     returnKeyType="next"
                                     ref={passwordInputRef}
-                                    autoFocus={!!person.password}
+                                    onSubmitEditing={() => confirmPasswordInputRef.current?.focus()}
                                 />
                                 <InputText
                                     name="confirmPassword"
@@ -168,10 +186,11 @@ export default function Person() {
                                     secureTextEntry
                                     returnKeyType="send"
                                     ref={confirmPasswordInputRef}
+                                    onSubmitEditing={() => formRef.current?.submitForm()}
                                 />
                                 <Button
                                     title="Update"
-                                    onPress={() => formRef?.current?.submitForm()}
+                                    onPress={() => formRef.current?.submitForm()}
                                 />
                             </LoginActionsContainer>
                         </Form>
