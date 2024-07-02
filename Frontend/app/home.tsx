@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useMemo, useState } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Pressable } from 'react-native';
+import { router } from 'expo-router';
 import HomeFooter from '@/components/HomeFooter';
 import SaverItemCard from '@/components/SaverItem/SaverItemCard';
 import { Colors } from '@/constants/Colors';
@@ -63,21 +64,15 @@ const Home: React.FC = () => {
               SAVER
             </Text>
           </View>
-          <View style={{ padding: 10, paddingRight: 25 }}>
-            <Text
-              style={{
-                fontSize: 42,
-                fontWeight: 700,
-                color: Colors.default.background,
-              }}
-            >
+          <Pressable onPress={() => router.navigate('person')}>
+            <View style={{ padding: 10, paddingRight: 25 }}>
               <Ionicons
                 name="person-circle-sharp"
                 size={32}
                 color={Colors.default.background}
               />
-            </Text>
-          </View>
+            </View>
+          </Pressable>
         </View>
       </View>
       <View

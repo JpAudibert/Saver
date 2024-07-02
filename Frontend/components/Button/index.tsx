@@ -9,16 +9,17 @@ interface CustomButtonProps {
 }
 type ButtonType = CustomButtonProps & ButtonProps;
 
-const Button: React.FC<ButtonType> = ({ title, onPress, fill, ...rest }) => {
+const Button: React.FC<ButtonType> = ({
+  title,
+  onPress,
+  fill = true,
+  ...rest
+}) => {
   return (
     <ButtonContainer fill={fill} onPress={onPress} {...rest}>
       <ButtonText fill={fill}>{title}</ButtonText>
     </ButtonContainer>
   );
-};
-
-Button.defaultProps = {
-  fill: true,
 };
 
 export default Button;

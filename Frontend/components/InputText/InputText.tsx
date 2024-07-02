@@ -4,7 +4,7 @@ import React, {
   useImperativeHandle,
   forwardRef,
   useState,
-  useCallback
+  useCallback,
 } from 'react';
 import { TextInputProps } from 'react-native';
 
@@ -90,9 +90,5 @@ const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
 };
 
 const InputText = forwardRef(Input);
-
-InputText.defaultProps = {
-  mask: null,
-};
 
 export default InputText;
