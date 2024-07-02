@@ -4,7 +4,7 @@ import React, {
   useImperativeHandle,
   forwardRef,
   useState,
-  useCallback,
+  useCallback
 } from 'react';
 import { TextInputProps } from 'react-native';
 
@@ -82,7 +82,6 @@ const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
         onBlur={handleInputBlur}
         onChangeText={value => {
           inputValueRef.current.value = value;
-          // inputElementRef.current.value = handleMask(value);
         }}
         {...rest}
       />

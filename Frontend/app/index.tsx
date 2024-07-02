@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router';
 import { Pressable } from 'react-native';
 import Button from '@/components/Button';
+import Ball from '@/components/Header/Ball';
 import {
   HeaderContainer,
   HeaderText,
@@ -16,6 +17,7 @@ export default function Index() {
   const { signIn } = useAuth();
   return (
     <PageContainer>
+      <Ball />
       <HeaderContainer>
         <Pressable
           onPress={() => {

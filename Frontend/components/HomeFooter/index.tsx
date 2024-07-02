@@ -1,6 +1,7 @@
 import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { View, Text } from 'react-native';
+import { View, Text, Button } from 'react-native';
+import { router } from 'expo-router';
 import { Colors } from '@/constants/Colors';
 import { FooterContainer } from './styles';
 
@@ -29,6 +30,7 @@ const HomeFooter: React.FC = () => {
           <Ionicons name="home" size={24} color={Colors.default.background} />
         </Text>
       </View>
+      <Button title="Person" onPress={() => router.navigate('person')} />
     </FooterContainer>
   );
 };
