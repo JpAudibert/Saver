@@ -21,7 +21,10 @@ export default function Index() {
       <HeaderContainer>
         <Pressable
           onPress={() => {
-            signIn({ email: 'denilson@email.com', password: 'denilson123' });
+            signIn({
+              email: 'renatafan@email.com',
+              password: 'renatafanJogoAberto',
+            });
             router.navigate('home');
           }}
         >

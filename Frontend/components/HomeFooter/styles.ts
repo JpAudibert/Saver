@@ -9,5 +9,5 @@ export const FooterContainer = styled.View`
   justify-content: space-around;
   align-items: center;
   background-color: ${Colors.default.main};
-  padding: 40px 30px;
+  height: 85px;
 `;

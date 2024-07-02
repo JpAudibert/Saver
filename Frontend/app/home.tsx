@@ -1,12 +1,13 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useMemo, useState } from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { View, Text, Pressable, SafeAreaView, ScrollView } from 'react-native';
 import { router } from 'expo-router';
 import HomeFooter from '@/components/HomeFooter';
 import SaverItemCard from '@/components/SaverItem/SaverItemCard';
 import { Colors } from '@/constants/Colors';
 import api from '@/services/api';
 import { handleNumberToCurrency } from '@/utils/formatNumber';
+import { CustomViewArea } from '@/components/ViewArea/styles';
 
 interface Finance {
   id: string;
@@ -89,16 +90,30 @@ const Home: React.FC = () => {
           <Text style={{ fontSize: 18 }}>Your balance</Text>
         </View>
       </View>
-      {finances?.length === 0
-        ? null
-        : finances?.map(finance => (
-            <SaverItemCard
-              key={finance.id}
-              title={finance.description}
-              type={finance.type}
-              value={finance.amount}
-            />
-          ))}
+      <CustomViewArea>
+        <ScrollView>
+          {finances?.length === 0
+            ? null
+            : finances?.map(finance => (
+                <SaverItemCard
+                  key={finance.id}
+                  title={finance.description}
+                  type={finance.type}
+                  value={finance.amount}
+                />
+              ))}
+          {finances?.length === 0
+            ? null
+            : finances?.map(finance => (
+                <SaverItemCard
+                  key={finance.id}
+                  title={finance.description}
+                  type={finance.type}
+                  value={finance.amount}
+                />
+              ))}
+        </ScrollView>
+      </CustomViewArea>
       <HomeFooter />
     </View>
   );
