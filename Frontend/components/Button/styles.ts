@@ -1,5 +1,5 @@
-import { Colors } from '@/constants/Colors';
 import styled from 'styled-components/native';
+import { Colors } from '@/constants/Colors';
 
 export const ButtonContainer = styled.Pressable<{ fill: boolean }>`
   width: 150px;
@@ -8,7 +8,7 @@ export const ButtonContainer = styled.Pressable<{ fill: boolean }>`
   justify-content: center;
   align-items: center;
 
-  background-color: ${(props) =>
+  background-color: ${props =>
     props.fill ? Colors.default.secondary : Colors.default.main};
 
   border-color: ${Colors.default.secondary};
@@ -20,7 +20,7 @@ export const ButtonContainer = styled.Pressable<{ fill: boolean }>`
 export const ButtonText = styled.Text<{ fill: boolean }>`
   font-weight: bold;
   font-size: 16px;
-  color: ${(props) =>
+  color: ${props =>
     props.fill ? Colors.default.text : Colors.default.secondary};
   line-height: 21px;
 `;

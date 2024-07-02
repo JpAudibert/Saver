@@ -1,9 +1,3 @@
-import Button from '@/components/Button';
-import BackHeader from '@/components/Header/BackHeader';
-import InputText from '@/components/InputText/InputText';
-import { LoginContainer, PageContainer } from '@/components/Layout/styles';
-import { LoginActionsContainer } from '@/components/LoginActions/styles';
-import { useAuth } from '@/hooks/auth';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/mobile';
 import { router } from 'expo-router';
@@ -16,8 +10,13 @@ import {
   TextInput,
   TouchableWithoutFeedback,
 } from 'react-native';
-
 import * as Yup from 'yup';
+import Button from '@/components/Button';
+import BackHeader from '@/components/Header/BackHeader';
+import InputText from '@/components/InputText/InputText';
+import { LoginContainer, PageContainer } from '@/components/Layout/styles';
+import { LoginActionsContainer } from '@/components/LoginActions/styles';
+import { useAuth } from '@/hooks/auth';
 
 interface Errors {
   [key: string]: string;
@@ -26,7 +25,7 @@ interface Errors {
 function getValidationErrors(err: Yup.ValidationError): Errors {
   const validationError: Errors = {};
 
-  err.inner.forEach((error) => {
+  err.inner.forEach(error => {
     validationError[error.path || ''] = error.message;
   });
 
@@ -42,38 +41,46 @@ export default function Index() {
 
   const { signIn } = useAuth();
 
-  const handleSignIn = useCallback(async ({ email, password }: SignInFormData): Promise<void> => {
-    try {
-      formRef.current?.setErrors({});
-      const schema = Yup.object().shape({
-        email: Yup.string().required('E-mail obrigatório').email('Digite um e-mail válido'),
-        password: Yup.string().required('Senha obrigatória'),
-      });
+  const handleSignIn = useCallback(
+    async ({ email, password }: SignInFormData): Promise<void> => {
+      try {
+        formRef.current?.setErrors({});
+        const schema = Yup.object().shape({
+          email: Yup.string()
+            .required('E-mail obrigatório')
+            .email('Digite um e-mail válido'),
+          password: Yup.string().required('Senha obrigatória'),
+        });
 
-      await schema.validate(
-        { email, password },
-        {
-          abortEarly: false,
+        await schema.validate(
+          { email, password },
+          {
+            abortEarly: false,
+          },
+        );
+        await signIn({
+          email,
+          password,
+        });
+
+        router.navigate('home');
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationErrors(err);
+
+          formRef.current?.setErrors(errors);
+
+          return;
         }
-      );
-      await signIn({
-        email: email,
-        password: password,
-      });
 
-      router.navigate('home');
-    } catch (err) {
-      if (err instanceof Yup.ValidationError) {
-        const errors = getValidationErrors(err);
-
-        formRef.current?.setErrors(errors);
-
-        return;
+        Alert.alert(
+          'Erro na autenticacao',
+          'Ocorreu um erro ao fazer login, cheque as credenciais',
+        );
       }
-
-      Alert.alert('Erro na autenticacao', 'Ocorreu um erro ao fazer login, cheque as credenciais');
-    }
-  }, []);
+    },
+    [signIn],
+  );
 
   return (
     <PageContainer>
@@ -104,7 +111,10 @@ export default function Index() {
                   returnKeyType="send"
                   // onSubmitEditing={() => formRef.current?.submitForm()}
                 />
-                <Button title="Log In" onPress={() => formRef.current?.submitForm()} />
+                <Button
+                  title="Log In"
+                  onPress={() => formRef.current?.submitForm()}
+                />
               </LoginActionsContainer>
             </Form>
           </TouchableWithoutFeedback>

@@ -1,9 +1,3 @@
-import Button from '@/components/Button';
-import BackHeader from '@/components/Header/BackHeader';
-import InputText from '@/components/InputText/InputText';
-import { LoginContainer, PageContainer } from '@/components/Layout/styles';
-import { LoginActionsContainer } from '@/components/LoginActions/styles';
-import { useAuth } from '@/hooks/auth';
 import { router } from 'expo-router';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/mobile';
@@ -16,8 +10,13 @@ import {
   TextInput,
   TouchableWithoutFeedback,
 } from 'react-native';
-
 import * as Yup from 'yup';
+import Button from '@/components/Button';
+import BackHeader from '@/components/Header/BackHeader';
+import InputText from '@/components/InputText/InputText';
+import { LoginContainer, PageContainer } from '@/components/Layout/styles';
+import { LoginActionsContainer } from '@/components/LoginActions/styles';
+import { useAuth } from '@/hooks/auth';
 
 interface SignUpFormData {
   email: string;
@@ -33,14 +32,14 @@ interface Errors {
 function getValidationErrors(err: Yup.ValidationError): Errors {
   const validationError: Errors = {};
 
-  err.inner.forEach((error) => {
+  err.inner.forEach(error => {
     validationError[error.path || ''] = error.message;
   });
 
   return validationError;
 }
 
-const Index = () => {
+function Index() {
   const formRef = useRef<FormHandles>(null);
   const cpfInputRef = useRef<TextInput>(null);
   const emailInputRef = useRef<TextInput>(null);
@@ -50,25 +49,39 @@ const Index = () => {
   const { signUp } = useAuth();
 
   const handleSignUp = useCallback(
-    async ({ email, password, confirmPassword, cpf, name }: SignUpFormData): Promise<void> => {
+    async ({
+      email,
+      password,
+      confirmPassword,
+      cpf,
+      name,
+    }: SignUpFormData): Promise<void> => {
       try {
         formRef.current?.setErrors({});
         const schema = Yup.object().shape({
           name: Yup.string().required('Nome obrigatório'),
           cpf: Yup.string().required('CPF obrigatório'),
-          email: Yup.string().required('E-mail obrigatório').email('Digite um e-mail válido'),
+          email: Yup.string()
+            .required('E-mail obrigatório')
+            .email('Digite um e-mail válido'),
           password: Yup.string().required('Senha obrigatória'),
           confirmPassword: Yup.string().oneOf(
             [Yup.ref('password')],
-            'As senhas precisam ser iguais'
+            'As senhas precisam ser iguais',
           ),
         });
 
         await schema.validate(
-          { email, password, confirmPassword, cpf, name },
+          {
+            email,
+            password,
+            confirmPassword,
+            cpf,
+            name,
+          },
           {
             abortEarly: false,
-          }
+          },
         );
         await signUp({
           email,
@@ -88,11 +101,11 @@ const Index = () => {
 
         Alert.alert(
           'Erro na autenticacao',
-          'Ocorreu um erro ao fazer login, cheque as credenciais'
+          'Ocorreu um erro ao fazer login, cheque as credenciais',
         );
       }
     },
-    []
+    [signUp],
   );
   return (
     <PageContainer>
@@ -138,7 +151,9 @@ const Index = () => {
                   placeholder="Password"
                   secureTextEntry
                   returnKeyType="next"
-                  onSubmitEditing={() => confirmPasswordInputRef.current?.focus()}
+                  onSubmitEditing={() =>
+                    confirmPasswordInputRef.current?.focus()
+                  }
                   ref={passwordInputRef}
                 />
                 <InputText
@@ -149,7 +164,10 @@ const Index = () => {
                   onSubmitEditing={() => formRef.current?.submitForm()}
                   ref={confirmPasswordInputRef}
                 />
-                <Button title="Sign Up" onPress={() => formRef?.current?.submitForm()} />
+                <Button
+                  title="Sign Up"
+                  onPress={() => formRef?.current?.submitForm()}
+                />
               </LoginActionsContainer>
             </Form>
           </TouchableWithoutFeedback>
@@ -157,6 +175,6 @@ const Index = () => {
       </KeyboardAvoidingView>
     </PageContainer>
   );
-};
+}
 
 export default Index;

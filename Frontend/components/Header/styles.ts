@@ -1,5 +1,5 @@
-import { Colors } from '@/constants/Colors';
 import styled from 'styled-components/native';
+import { Colors } from '@/constants/Colors';
 
 export const BackHeaderContainer = styled.View`
   display: flex;

@@ -1,3 +1,5 @@
+import { useRouter } from 'expo-router';
+import { Pressable } from 'react-native';
 import Button from '@/components/Button';
 import {
   HeaderContainer,
@@ -8,8 +10,6 @@ import {
 } from '@/components/Layout/styles';
 import { LoginActionsContainer } from '@/components/LoginActions/styles';
 import { useAuth } from '@/hooks/auth';
-import { useRouter } from 'expo-router';
-import { Pressable } from 'react-native';
 
 export default function Index() {
   const router = useRouter();
@@ -31,7 +31,11 @@ export default function Index() {
       <LoginContainer container="sm">
         <LoginActionsContainer>
           <Button title="Log In" onPress={() => router.navigate('login')} />
-          <Button title="Sign Up" onPress={() => router.navigate('signup')} fill={false} />
+          <Button
+            title="Sign Up"
+            onPress={() => router.navigate('signup')}
+            fill={false}
+          />
         </LoginActionsContainer>
       </LoginContainer>
     </PageContainer>

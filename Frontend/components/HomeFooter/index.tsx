@@ -1,6 +1,7 @@
-import { Colors } from '@/constants/Colors';
+import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { View, Text } from 'react-native';
+import { Colors } from '@/constants/Colors';
 import { FooterContainer } from './styles';
 
 const HomeFooter: React.FC = () => {

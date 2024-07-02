@@ -1,11 +1,12 @@
-import api from '@/services/api';
 import React, {
   createContext,
   useCallback,
   useState,
   useContext,
   useEffect,
+  useMemo,
 } from 'react';
+import api from '@/services/api';
 
 interface User {
   id: string;
@@ -97,7 +98,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         user,
       });
     },
-    [setData, data.token]
+    [setData, data.token],
   );
 
   const signUp = useCallback(
@@ -112,16 +113,22 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       await signIn({ email, password });
     },
-    []
+    [signIn],
   );
 
-  return (
-    <AuthContext.Provider
-      value={{ user: data.user, loading, signIn, signOut, updateUser, signUp }}
-    >
-      {children}
-    </AuthContext.Provider>
+  const value = useMemo(
+    () => ({
+      user: data.user,
+      loading,
+      signIn,
+      signOut,
+      updateUser,
+      signUp,
+    }),
+    [data.user, loading, signIn, signOut, signUp, updateUser],
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 function useAuth(): AuthContextData {

@@ -1,11 +1,11 @@
+import { Ionicons } from '@expo/vector-icons';
+import React, { useEffect, useMemo, useState } from 'react';
+import { View, Text } from 'react-native';
 import HomeFooter from '@/components/HomeFooter';
 import SaverItemCard from '@/components/SaverItem/SaverItemCard';
 import { Colors } from '@/constants/Colors';
 import api from '@/services/api';
 import { handleNumberToCurrency } from '@/utils/formatNumber';
-import { Ionicons } from '@expo/vector-icons';
-import { useEffect, useMemo, useState } from 'react';
-import { View, Text } from 'react-native';
 
 interface Finance {
   id: string;
@@ -20,8 +20,10 @@ const Home: React.FC = () => {
   const balance = useMemo(() => {
     return handleNumberToCurrency(
       finances.reduce((acc, finance) => {
-        return finance.type === 'income' ? acc + finance.amount : acc - finance.amount;
-      }, 0)
+        return finance.type === 'income'
+          ? acc + finance.amount
+          : acc - finance.amount;
+      }, 0),
     );
   }, [finances]);
 
@@ -69,7 +71,11 @@ const Home: React.FC = () => {
                 color: Colors.default.background,
               }}
             >
-              <Ionicons name="person-circle-sharp" size={32} color={Colors.default.background} />
+              <Ionicons
+                name="person-circle-sharp"
+                size={32}
+                color={Colors.default.background}
+              />
             </Text>
           </View>
         </View>
@@ -90,7 +96,7 @@ const Home: React.FC = () => {
       </View>
       {finances?.length === 0
         ? null
-        : finances?.map((finance) => (
+        : finances?.map(finance => (
             <SaverItemCard
               key={finance.id}
               title={finance.description}

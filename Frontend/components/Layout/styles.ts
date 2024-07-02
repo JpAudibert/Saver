@@ -1,5 +1,5 @@
-import { Colors } from '@/constants/Colors';
 import styled from 'styled-components/native';
+import { Colors } from '@/constants/Colors';
 
 interface LoginContainerProps {
   container: 'lg' | 'md' | 'sm';
@@ -14,12 +14,12 @@ export const PageContainer = styled.View`
 `;
 
 export const LoginContainer = styled.View<LoginContainerProps>`
-  min-height: ${(props) =>
+  min-height: ${props =>
     props.container === 'lg'
       ? '550px'
       : props.container === 'md'
-      ? '410px'
-      : '350px'};
+        ? '410px'
+        : '350px'};
   width: 150%;
   border-radius: 700px 700px 0 0;
   background-color: ${Colors.default.main};
