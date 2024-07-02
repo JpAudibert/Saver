@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useMemo, useState } from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { View, Text, Pressable, ScrollView } from 'react-native';
 import { router } from 'expo-router';
 import HomeFooter from '@/components/HomeFooter';
 import SaverItemCard from '@/components/SaverItem/SaverItemCard';
@@ -89,16 +89,18 @@ const Home: React.FC = () => {
           <Text style={{ fontSize: 18 }}>Your balance</Text>
         </View>
       </View>
-      {finances?.length === 0
-        ? null
-        : finances?.map(finance => (
-            <SaverItemCard
-              key={finance.id}
-              title={finance.description}
-              type={finance.type}
-              value={finance.amount}
-            />
-          ))}
+      <ScrollView>
+        {finances?.length === 0
+          ? null
+          : finances?.map(finance => (
+              <SaverItemCard
+                key={finance.id}
+                title={finance.description}
+                type={finance.type}
+                value={finance.amount}
+              />
+            ))}
+      </ScrollView>
       <HomeFooter />
     </View>
   );

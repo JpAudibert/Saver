@@ -2,7 +2,7 @@ import styled from 'styled-components/native';
 import { Colors } from '@/constants/Colors';
 
 export const FooterContainer = styled.View`
-  position: absolute;
+  position: relative;
   bottom: 0;
   width: 100%;
   flex-direction: row;
