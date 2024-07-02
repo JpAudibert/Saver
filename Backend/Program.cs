@@ -87,6 +87,8 @@ builder.Services.AddScoped<IFinanceService, FinanceService>();
 
 builder.Services.AddScoped<SaverContext>();
 
+builder.Services.AddCors();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -103,5 +105,10 @@ app.UseAuthorization();
 app.UseMiddleware<JwtMiddleware>();
 
 app.MapControllers();
+
+app.UseCors(x => x
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader());
 
 app.Run();

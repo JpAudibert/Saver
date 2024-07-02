@@ -1,3 +1,4 @@
+import Button from "@/components/Button";
 import BackHeader from "@/components/Header/BackHeader";
 import InputText from "@/components/InputText/InputText";
 import { LoginContainer, PageContainer } from "@/components/Layout/styles";
@@ -6,16 +7,16 @@ import api from "@/services/api";
 import { FormHandles } from "@unform/core";
 import { Form } from "@unform/mobile";
 import { router } from "expo-router";
-import { useCallback, useRef } from "react";
-import { Alert, Button, Keyboard, KeyboardAvoidingView, Platform, TextInput, TouchableWithoutFeedback } from "react-native";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Alert, Keyboard, KeyboardAvoidingView, Platform, TextInput, TouchableWithoutFeedback } from "react-native";
 
 import * as Yup from 'yup';
 
-interface SignUpFormData {
+interface PersonData {
     email: string;
     password: string;
     confirmPassword: string;
-    cpf: string;
+    identificationNumber: string;
     name: string;
     isActive: boolean;
 }
@@ -31,6 +32,8 @@ export default function Person() {
     const passwordInputRef = useRef<TextInput>(null);
     const confirmPasswordInputRef = useRef<TextInput>(null);
 
+    const [person, setPerson] = useState({} as PersonData);
+
     function getValidationErrors(err: Yup.ValidationError): Errors {
         const validationError: Errors = {};
 
@@ -41,8 +44,18 @@ export default function Person() {
         return validationError;
     }
 
-    const handleUpdate = useCallback(async ({ email, password, confirmPassword, cpf, name, isActive }: SignUpFormData): Promise<void> => {
+    useEffect(() => {
+        api.get(`/users/${api.defaults.headers.userId}`).then(response => {
+            setPerson(response.data);
+        }).catch(err => {
+            console.log(err);
+        });
+    },[]);
+
+    const handleUpdate = useCallback(async (data: PersonData): Promise<void> => {
         try {
+            console.log(data);
+            
             formRef.current?.setErrors({});
             const schema = Yup.object().shape({
                 name: Yup.string().required('Name is required'),
@@ -57,33 +70,33 @@ export default function Person() {
                 ),
             });
 
-            await schema.validate(
-                { email, password, confirmPassword, cpf, name },
-                {
-                    abortEarly: false,
-                }
-            );
+            // await schema.validate(
+            //     { email, password, confirmPassword, cpf, name },
+            //     {
+            //         abortEarly: false,
+            //     }
+            // );
 
-            const formData = {
-                name,
-                email,
-                password,
-                identificationNumber: cpf,
-                isActive: true
-            }
+            // const formData = {
+            //     name,
+            //     email,
+            //     password,
+            //     identificationNumber: cpf,
+            //     isActive: true
+            // }
 
-            await api.put(`/users/${api.defaults.headers.userId}`, formData);
+            // console.log(formData);
+            
+
+            // await api.put(`/users/${api.defaults.headers.userId}`, formData);
 
             router.navigate('home');
         } catch (err) {
-            console.log(err);
             if (err instanceof Yup.ValidationError) {
                 const errors = getValidationErrors(err);
 
                 formRef.current?.setErrors(errors);
-
                 
-
                 return;
             }
 
@@ -104,14 +117,22 @@ export default function Person() {
             >
                 <LoginContainer container="lg">
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                        <Form ref={formRef} onSubmit={handleUpdate}>
+                        <Form ref={formRef} initialData={
+                            {
+                                name: person.name,
+                                cpf: person.identificationNumber,
+                                email: person.email,
+                                password: person.password,
+                                confirmPassword: ''
+                            }
+                        } onSubmit={handleUpdate}>
                             <LoginActionsContainer>
                                 <InputText
                                     name="name"
                                     placeholder="Name"
                                     autoCorrect={false}
                                     returnKeyType="next"
-                                    onSubmitEditing={() => cpfInputRef.current?.focus()}
+                                    autoFocus={!!person.name}
                                 />
                                 <InputText
                                     name="cpf"
@@ -120,8 +141,8 @@ export default function Person() {
                                     mask="cpf"
                                     returnKeyType="next"
                                     keyboardType="numeric"
-                                    onSubmitEditing={() => emailInputRef.current?.focus()}
                                     ref={cpfInputRef}
+                                    autoFocus={!!person.identificationNumber}
                                 />
                                 <InputText
                                     name="email"
@@ -130,29 +151,26 @@ export default function Person() {
                                     autoCapitalize="none"
                                     keyboardType="email-address"
                                     returnKeyType="next"
-                                    onSubmitEditing={() => passwordInputRef.current?.focus()}
                                     ref={emailInputRef}
+                                    autoFocus={!!person.email}
                                 />
                                 <InputText
                                     name="password"
                                     placeholder="Password"
                                     secureTextEntry
                                     returnKeyType="next"
-                                    onSubmitEditing={() =>
-                                        confirmPasswordInputRef.current?.focus()
-                                    }
                                     ref={passwordInputRef}
+                                    autoFocus={!!person.password}
                                 />
                                 <InputText
                                     name="confirmPassword"
                                     placeholder="Confirm Password"
                                     secureTextEntry
                                     returnKeyType="send"
-                                    onSubmitEditing={() => formRef.current?.submitForm()}
                                     ref={confirmPasswordInputRef}
                                 />
                                 <Button
-                                    title="Sign Up"
+                                    title="Update"
                                     onPress={() => formRef?.current?.submitForm()}
                                 />
                             </LoginActionsContainer>
