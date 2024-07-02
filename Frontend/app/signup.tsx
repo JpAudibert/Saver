@@ -40,7 +40,7 @@ function getValidationErrors(err: Yup.ValidationError): Errors {
   return validationError;
 }
 
-export default function Index() {
+const Index = () => {
   const formRef = useRef<FormHandles>(null);
   const cpfInputRef = useRef<TextInput>(null);
   const emailInputRef = useRef<TextInput>(null);
@@ -50,21 +50,13 @@ export default function Index() {
   const { signUp } = useAuth();
 
   const handleSignUp = useCallback(
-    async ({
-      email,
-      password,
-      confirmPassword,
-      cpf,
-      name,
-    }: SignUpFormData): Promise<void> => {
+    async ({ email, password, confirmPassword, cpf, name }: SignUpFormData): Promise<void> => {
       try {
         formRef.current?.setErrors({});
         const schema = Yup.object().shape({
           name: Yup.string().required('Nome obrigatório'),
           cpf: Yup.string().required('CPF obrigatório'),
-          email: Yup.string()
-            .required('E-mail obrigatório')
-            .email('Digite um e-mail válido'),
+          email: Yup.string().required('E-mail obrigatório').email('Digite um e-mail válido'),
           password: Yup.string().required('Senha obrigatória'),
           confirmPassword: Yup.string().oneOf(
             [Yup.ref('password')],
@@ -146,9 +138,7 @@ export default function Index() {
                   placeholder="Password"
                   secureTextEntry
                   returnKeyType="next"
-                  onSubmitEditing={() =>
-                    confirmPasswordInputRef.current?.focus()
-                  }
+                  onSubmitEditing={() => confirmPasswordInputRef.current?.focus()}
                   ref={passwordInputRef}
                 />
                 <InputText
@@ -159,10 +149,7 @@ export default function Index() {
                   onSubmitEditing={() => formRef.current?.submitForm()}
                   ref={confirmPasswordInputRef}
                 />
-                <Button
-                  title="Sign Up"
-                  onPress={() => formRef?.current?.submitForm()}
-                />
+                <Button title="Sign Up" onPress={() => formRef?.current?.submitForm()} />
               </LoginActionsContainer>
             </Form>
           </TouchableWithoutFeedback>
@@ -170,4 +157,6 @@ export default function Index() {
       </KeyboardAvoidingView>
     </PageContainer>
   );
-}
+};
+
+export default Index;

@@ -69,7 +69,7 @@ const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
         inputElementRef.current.clear();
       },
     });
-  }, [fieldName, registerField, inputValueRef.current.value]);
+  }, [fieldName, registerField, inputValueRef.current]);
 
   return (
     <Container isFocused={isFocused} isErrored={!!error}>

@@ -73,7 +73,8 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       email,
       password,
     });
-    const { token, id, name, responseEmail } = response.data; // await AsyncStorage.multiSet([
+    const { token, id, name, responseEmail } = response.data;
+    // await AsyncStorage.multiSet([
     //   ['@GoBarber:token', token],
     //   ['@GoBarber:user', JSON.stringify(user)],
     // ]);

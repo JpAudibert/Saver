@@ -42,46 +42,38 @@ export default function Index() {
 
   const { signIn } = useAuth();
 
-  const handleSignIn = useCallback(
-    async ({ email, password }: SignInFormData): Promise<void> => {
-      try {
-        formRef.current?.setErrors({});
-        const schema = Yup.object().shape({
-          email: Yup.string()
-            .required('E-mail obrigatório')
-            .email('Digite um e-mail válido'),
-          password: Yup.string().required('Senha obrigatória'),
-        });
+  const handleSignIn = useCallback(async ({ email, password }: SignInFormData): Promise<void> => {
+    try {
+      formRef.current?.setErrors({});
+      const schema = Yup.object().shape({
+        email: Yup.string().required('E-mail obrigatório').email('Digite um e-mail válido'),
+        password: Yup.string().required('Senha obrigatória'),
+      });
 
-        await schema.validate(
-          { email, password },
-          {
-            abortEarly: false,
-          }
-        );
-        await signIn({
-          email: email,
-          password: password,
-        });
-
-        router.navigate('home');
-      } catch (err) {
-        if (err instanceof Yup.ValidationError) {
-          const errors = getValidationErrors(err);
-
-          formRef.current?.setErrors(errors);
-
-          return;
+      await schema.validate(
+        { email, password },
+        {
+          abortEarly: false,
         }
+      );
+      await signIn({
+        email: email,
+        password: password,
+      });
 
-        Alert.alert(
-          'Erro na autenticacao',
-          'Ocorreu um erro ao fazer login, cheque as credenciais'
-        );
+      router.navigate('home');
+    } catch (err) {
+      if (err instanceof Yup.ValidationError) {
+        const errors = getValidationErrors(err);
+
+        formRef.current?.setErrors(errors);
+
+        return;
       }
-    },
-    [signIn]
-  );
+
+      Alert.alert('Erro na autenticacao', 'Ocorreu um erro ao fazer login, cheque as credenciais');
+    }
+  }, []);
 
   return (
     <PageContainer>
@@ -112,10 +104,7 @@ export default function Index() {
                   returnKeyType="send"
                   // onSubmitEditing={() => formRef.current?.submitForm()}
                 />
-                <Button
-                  title="Log In"
-                  onPress={() => formRef.current?.submitForm()}
-                />
+                <Button title="Log In" onPress={() => formRef.current?.submitForm()} />
               </LoginActionsContainer>
             </Form>
           </TouchableWithoutFeedback>
