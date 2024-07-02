@@ -1,7 +1,7 @@
-import { Colors } from '@/constants/Colors';
 import { styled } from 'styled-components/native';
+import { Colors } from '@/constants/Colors';
 
-export const Container = styled.View`
+export const Container = styled.Pressable`
   margin: 10px;
 `;
 
@@ -20,7 +20,7 @@ interface RowBadgeProps {
 
 export const RowBadge = styled.View<RowBadgeProps>`
   width: 8px;
-  background-color: ${(props) =>
+  background-color: ${props =>
     props.type === 'income' ? Colors.default.main : Colors.default.spending};
   height: 45px;
   border-radius: 1px;

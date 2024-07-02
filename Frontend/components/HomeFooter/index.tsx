@@ -12,7 +12,11 @@ const HomeFooter: React.FC = () => {
         <Ionicons name="cash" size={24} color={Colors.default.background} />
       </Pressable>
       <Pressable onPress={() => router.navigate('home')}>
-        <Ionicons name="home" size={24} color={Colors.default.background} />
+        <Ionicons
+          name="home-outline"
+          size={24}
+          color={Colors.default.background}
+        />
       </Pressable>
       <Pressable onPress={() => router.navigate('add-expense')}>
         <Ionicons name="flame" size={24} color={Colors.default.background} />

@@ -95,9 +95,13 @@ const Home: React.FC = () => {
           : finances?.map(finance => (
               <SaverItemCard
                 key={finance.id}
+                id={finance.id}
                 title={finance.description}
                 type={finance.type}
                 value={finance.amount}
+                afterDelete={() => {
+                  setFinances(value => value.filter(f => f.id !== finance.id));
+                }}
               />
             ))}
       </ScrollView>
