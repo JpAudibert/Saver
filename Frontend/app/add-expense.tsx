@@ -18,6 +18,7 @@ import InputText from '@/components/InputText/InputText';
 import { LoginContainer, PageContainer } from '@/components/Layout/styles';
 import { LoginActionsContainer } from '@/components/LoginActions/styles';
 import api from '@/services/api';
+import { Colors } from '@/constants/Colors';
 
 interface FinanceData {
   amount: number;
@@ -94,7 +95,7 @@ export default function AddFinance() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ width: '100%', left: '-25%' }}
       >
-        <LoginContainer container="md">
+        <LoginContainer container="md" color={Colors.default.spending}>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <Form
               ref={formRef}

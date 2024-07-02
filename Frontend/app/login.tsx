@@ -17,6 +17,7 @@ import InputText from '@/components/InputText/InputText';
 import { LoginContainer, PageContainer } from '@/components/Layout/styles';
 import { LoginActionsContainer } from '@/components/LoginActions/styles';
 import { useAuth } from '@/hooks/auth';
+import { Colors } from '@/constants/Colors';
 
 interface Errors {
   [key: string]: string;
@@ -90,7 +91,7 @@ export default function Index() {
         behavior={Platform.OS === 'ios' ? 'position' : 'height'}
         style={{ width: '100%', left: '-25%' }}
       >
-        <LoginContainer container="md">
+        <LoginContainer container="md" color={Colors.default.main}>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <Form ref={formRef} onSubmit={handleSignIn}>
               <LoginActionsContainer>

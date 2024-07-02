@@ -11,6 +11,7 @@ import {
 } from '@/components/Layout/styles';
 import { LoginActionsContainer } from '@/components/LoginActions/styles';
 import { useAuth } from '@/hooks/auth';
+import { Colors } from '@/constants/Colors';
 
 export default function Index() {
   const router = useRouter();
@@ -33,7 +34,7 @@ export default function Index() {
         <SloganText>Saving your money is our goal</SloganText>
       </HeaderContainer>
 
-      <LoginContainer container="sm">
+      <LoginContainer container="sm" color={Colors.default.main}>
         <LoginActionsContainer>
           <Button title="Log In" onPress={() => router.navigate('login')} />
           <Button

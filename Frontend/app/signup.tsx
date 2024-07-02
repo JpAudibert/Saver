@@ -17,6 +17,7 @@ import InputText from '@/components/InputText/InputText';
 import { LoginContainer, PageContainer } from '@/components/Layout/styles';
 import { LoginActionsContainer } from '@/components/LoginActions/styles';
 import { useAuth } from '@/hooks/auth';
+import { Colors } from '@/constants/Colors';
 
 interface SignUpFormData {
   email: string;
@@ -115,7 +116,7 @@ function Index() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ width: '100%', left: '-25%' }}
       >
-        <LoginContainer container="lg">
+        <LoginContainer container="lg" color={Colors.default.main}>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <Form ref={formRef} onSubmit={handleSignUp}>
               <LoginActionsContainer>

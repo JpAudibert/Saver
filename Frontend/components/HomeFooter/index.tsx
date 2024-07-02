@@ -14,7 +14,7 @@ const HomeFooter: React.FC = () => {
       <Pressable onPress={() => router.navigate('home')}>
         <Ionicons
           name="home-outline"
-          size={24}
+          size={36}
           color={Colors.default.background}
         />
       </Pressable>

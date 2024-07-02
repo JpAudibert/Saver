@@ -3,6 +3,7 @@ import { Colors } from '@/constants/Colors';
 
 interface LoginContainerProps {
   container: 'lg' | 'md' | 'sm';
+  color: string;
 }
 
 export const PageContainer = styled.View`
@@ -22,7 +23,7 @@ export const LoginContainer = styled.View<LoginContainerProps>`
         : '350px'};
   width: 150%;
   border-radius: 700px 700px 0 0;
-  background-color: ${Colors.default.main};
+  background-color: ${props => props.color};
 `;
 
 export const HeaderText = styled.Text`
