@@ -1,4 +1,5 @@
 import Button from '@/components/Button';
+import Ball from '@/components/Header/Ball';
 import {
   HeaderContainer,
   HeaderText,
@@ -8,11 +9,14 @@ import {
 } from '@/components/Layout/styles';
 import { LoginActionsContainer } from '@/components/LoginActions/styles';
 import { useRouter } from 'expo-router';
+import { View, StyleSheet } from 'react-native';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 export default function Index() {
   const router = useRouter();
   return (
     <PageContainer>
+      <Ball/>
       <HeaderContainer>
         <HeaderText>SAVER</HeaderText>
         <SloganText>Saving your money is our goal</SloganText>
@@ -30,4 +34,6 @@ export default function Index() {
       </LoginContainer>
     </PageContainer>
   );
+
 }
+

@@ -14,7 +14,7 @@ public class FinancesController(IFinanceService financeService) : ControllerBase
     private readonly IFinanceService _financeService = financeService;
 
     [HttpGet]
-    public async Task<ActionResult<User>> GetAllFinances([FromHeader] Guid userId)
+    public async Task<ActionResult<Finance>> GetAllFinances([FromHeader] Guid userId)
     {
         return Ok(await _financeService.GetAllFinancesForUser(userId));
     }
