@@ -33,7 +33,10 @@ const Home: React.FC = () => {
       const { data } = await api.get<Finance[]>('finances');
       setFinances(data);
     };
-    fetchData();
+    const intervalId = setInterval(() => {
+      fetchData();
+    }, 1000 * 5); // in milliseconds
+    return () => clearInterval(intervalId);
   }, []);
 
   return (
