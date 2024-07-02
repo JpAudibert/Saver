@@ -1,17 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useMemo, useState } from 'react';
-<<<<<<< HEAD
 import { View, Text, Pressable, ScrollView } from 'react-native';
-=======
-import { View, Text, Pressable, SafeAreaView, ScrollView } from 'react-native';
->>>>>>> 738a9e6731506c64ccbd165eb0b65e4e2e22b6b8
 import { router } from 'expo-router';
 import HomeFooter from '@/components/HomeFooter';
 import SaverItemCard from '@/components/SaverItem/SaverItemCard';
 import { Colors } from '@/constants/Colors';
 import api from '@/services/api';
 import { handleNumberToCurrency } from '@/utils/formatNumber';
-import { CustomViewArea } from '@/components/ViewArea/styles';
 
 interface Finance {
   id: string;
