@@ -6,6 +6,7 @@
 const tintColorLight = '#0a7ea4';
 const mainColor = '#238544';
 const secondaryColor = '#85BB7D';
+const lightSpendingColor = '#e2869b';
 const backgroundColor = '#F6FCF6';
 const textColor = '#161925';
 const spendingColor = '#B12428';
@@ -26,6 +27,7 @@ export const Colors = {
     text: textColor,
     background: backgroundColor,
     spending: spendingColor,
+    lightSpending: lightSpendingColor,
     accent: accentColor,
     gray: '#687076',
   },

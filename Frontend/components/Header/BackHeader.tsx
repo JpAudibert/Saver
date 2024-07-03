@@ -1,8 +1,8 @@
 import React from 'react';
-import { SloganText } from '../Layout/styles';
 import { useRouter } from 'expo-router';
-import { Pressable, Text, View } from 'react-native';
+import { Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { SloganText } from '../Layout/styles';
 import { BackButton, BackHeaderContainer, BakcContainer } from './styles';
 
 interface BackHeaderProps {

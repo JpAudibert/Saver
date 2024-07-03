@@ -1,3 +1,4 @@
+import React from 'react';
 import { ButtonProps } from 'react-native';
 import { ButtonContainer, ButtonText } from './styles';
 

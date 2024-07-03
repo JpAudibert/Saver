@@ -1,6 +1,6 @@
-import { Colors } from '@/constants/Colors';
 import styled from 'styled-components/native';
 import { Dimensions } from 'react-native';
+import { Colors } from '@/constants/Colors';
 
 export const BackHeaderContainer = styled.View`
   display: flex;

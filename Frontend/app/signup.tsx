@@ -1,9 +1,3 @@
-import Button from '@/components/Button';
-import BackHeader from '@/components/Header/BackHeader';
-import InputText from '@/components/InputText/InputText';
-import { LoginContainer, PageContainer } from '@/components/Layout/styles';
-import { LoginActionsContainer } from '@/components/LoginActions/styles';
-import { useAuth } from '@/hooks/auth';
 import { router } from 'expo-router';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/mobile';
@@ -16,8 +10,14 @@ import {
   TextInput,
   TouchableWithoutFeedback,
 } from 'react-native';
-
 import * as Yup from 'yup';
+import Button from '@/components/Button';
+import BackHeader from '@/components/Header/BackHeader';
+import InputText from '@/components/InputText/InputText';
+import { LoginContainer, PageContainer } from '@/components/Layout/styles';
+import { LoginActionsContainer } from '@/components/LoginActions/styles';
+import { useAuth } from '@/hooks/auth';
+import { Colors } from '@/constants/Colors';
 
 interface SignUpFormData {
   email: string;
@@ -33,14 +33,14 @@ interface Errors {
 function getValidationErrors(err: Yup.ValidationError): Errors {
   const validationError: Errors = {};
 
-  err.inner.forEach((error) => {
+  err.inner.forEach(error => {
     validationError[error.path || ''] = error.message;
   });
 
   return validationError;
 }
 
-export default function Index() {
+function Index() {
   const formRef = useRef<FormHandles>(null);
   const cpfInputRef = useRef<TextInput>(null);
   const emailInputRef = useRef<TextInput>(null);
@@ -68,15 +68,21 @@ export default function Index() {
           password: Yup.string().required('Senha obrigatória'),
           confirmPassword: Yup.string().oneOf(
             [Yup.ref('password')],
-            'As senhas precisam ser iguais'
+            'As senhas precisam ser iguais',
           ),
         });
 
         await schema.validate(
-          { email, password, confirmPassword, cpf, name },
+          {
+            email,
+            password,
+            confirmPassword,
+            cpf,
+            name,
+          },
           {
             abortEarly: false,
-          }
+          },
         );
         await signUp({
           email,
@@ -96,11 +102,11 @@ export default function Index() {
 
         Alert.alert(
           'Erro na autenticacao',
-          'Ocorreu um erro ao fazer login, cheque as credenciais'
+          'Ocorreu um erro ao fazer login, cheque as credenciais',
         );
       }
     },
-    []
+    [signUp],
   );
   return (
     <PageContainer>
@@ -110,7 +116,7 @@ export default function Index() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ width: '100%', left: '-25%' }}
       >
-        <LoginContainer container="lg">
+        <LoginContainer container="lg" color={Colors.default.main}>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <Form ref={formRef} onSubmit={handleSignUp}>
               <LoginActionsContainer>
@@ -171,3 +177,5 @@ export default function Index() {
     </PageContainer>
   );
 }
+
+export default Index;

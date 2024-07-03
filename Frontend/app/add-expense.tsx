@@ -1,7 +1,7 @@
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/mobile';
 import { router } from 'expo-router';
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Alert,
   Keyboard,
@@ -9,6 +9,7 @@ import {
   Platform,
   TextInput,
   TouchableWithoutFeedback,
+  Text,
 } from 'react-native';
 import * as Yup from 'yup';
 import Button from '@/components/Button';
@@ -16,13 +17,17 @@ import BackHeader from '@/components/Header/BackHeader';
 import InputText from '@/components/InputText/InputText';
 import { LoginContainer, PageContainer } from '@/components/Layout/styles';
 import { LoginActionsContainer } from '@/components/LoginActions/styles';
-import { useAuth } from '@/hooks/auth';
+import api from '@/services/api';
 import { Colors } from '@/constants/Colors';
+
+interface FinanceData {
+  amount: number;
+  description: string;
+}
 
 interface Errors {
   [key: string]: string;
 }
-
 function getValidationErrors(err: Yup.ValidationError): Errors {
   const validationError: Errors = {};
 
@@ -32,37 +37,27 @@ function getValidationErrors(err: Yup.ValidationError): Errors {
 
   return validationError;
 }
-interface SignInFormData {
-  email: string;
-  password: string;
-}
-export default function Index() {
+
+export default function AddFinance() {
   const formRef = useRef<FormHandles>(null);
-  const passwordInputRef = useRef<TextInput>(null);
+  const descriptionInputRef = useRef<TextInput>(null);
 
-  const { signIn } = useAuth();
-
-  const handleSignIn = useCallback(
-    async ({ email, password }: SignInFormData): Promise<void> => {
+  const handleUpdate = useCallback(
+    async ({ amount, description }: FinanceData): Promise<void> => {
       try {
         formRef.current?.setErrors({});
         const schema = Yup.object().shape({
-          email: Yup.string()
-            .required('E-mail obrigatório')
-            .email('Digite um e-mail válido'),
-          password: Yup.string().required('Senha obrigatória'),
+          amount: Yup.number().required('Amount is required'),
+          description: Yup.string().required('Description is required'),
         });
 
-        await schema.validate(
-          { email, password },
-          {
-            abortEarly: false,
-          },
-        );
-        await signIn({
-          email,
-          password,
-        });
+        const formData = {
+          amount,
+          description,
+          type: 'expense',
+        };
+
+        await api.post('/finances', formData);
 
         router.navigate('home');
       } catch (err) {
@@ -75,45 +70,57 @@ export default function Index() {
         }
 
         Alert.alert(
-          'Erro na autenticacao',
-          'Ocorreu um erro ao fazer login, cheque as credenciais',
+          'Error on updating person',
+          'Please check the informed data and try again.',
         );
       }
     },
-    [signIn],
+    [],
   );
 
   return (
     <PageContainer>
-      <BackHeader text="Log In" />
-
+      <BackHeader text="Home" />
+      <Text
+        style={{
+          fontSize: 24,
+          fontWeight: 'bold',
+          textAlign: 'center',
+          marginTop: 20,
+        }}
+      >
+        Add a new expense
+      </Text>
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'position' : 'height'}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ width: '100%', left: '-25%' }}
       >
-        <LoginContainer container="md" color={Colors.default.main}>
+        <LoginContainer container="md" color={Colors.default.spending}>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <Form ref={formRef} onSubmit={handleSignIn}>
+            <Form
+              ref={formRef}
+              initialData={{
+                amount: 0,
+                description: '',
+              }}
+              onSubmit={handleUpdate}
+            >
               <LoginActionsContainer>
                 <InputText
-                  name="email"
-                  placeholder="E-mail"
-                  autoCorrect={false}
-                  autoCapitalize="none"
-                  keyboardType="email-address"
+                  name="amount"
+                  placeholder="Amount"
+                  keyboardType="numeric"
                   returnKeyType="next"
-                  onSubmitEditing={() => passwordInputRef.current?.focus()}
+                  onSubmitEditing={() => descriptionInputRef.current?.focus()}
                 />
                 <InputText
-                  ref={passwordInputRef}
-                  name="password"
-                  placeholder="Senha"
-                  secureTextEntry
+                  name="description"
+                  placeholder="Description"
                   returnKeyType="send"
-                  // onSubmitEditing={() => formRef.current?.submitForm()}
+                  onSubmitEditing={() => formRef.current?.submitForm()}
                 />
                 <Button
-                  title="Log In"
+                  title="Add"
                   onPress={() => formRef.current?.submitForm()}
                 />
               </LoginActionsContainer>

@@ -1,3 +1,5 @@
+import { useRouter } from 'expo-router';
+import { Pressable } from 'react-native';
 import Button from '@/components/Button';
 import Ball from '@/components/Header/Ball';
 import {
@@ -8,21 +10,31 @@ import {
   SloganText,
 } from '@/components/Layout/styles';
 import { LoginActionsContainer } from '@/components/LoginActions/styles';
-import { useRouter } from 'expo-router';
-import { View, StyleSheet } from 'react-native';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { useAuth } from '@/hooks/auth';
+import { Colors } from '@/constants/Colors';
 
 export default function Index() {
   const router = useRouter();
+  const { signIn } = useAuth();
   return (
     <PageContainer>
-      <Ball/>
+      <Ball />
       <HeaderContainer>
-        <HeaderText>SAVER</HeaderText>
+        <Pressable
+          onPress={() => {
+            signIn({
+              email: 'renatafan@email.com',
+              password: 'renatafanJogoAberto',
+            });
+            router.navigate('home');
+          }}
+        >
+          <HeaderText>SAVER</HeaderText>
+        </Pressable>
         <SloganText>Saving your money is our goal</SloganText>
       </HeaderContainer>
 
-      <LoginContainer container="sm">
+      <LoginContainer container="sm" color={Colors.default.main}>
         <LoginActionsContainer>
           <Button title="Log In" onPress={() => router.navigate('login')} />
           <Button
@@ -34,6 +46,4 @@ export default function Index() {
       </LoginContainer>
     </PageContainer>
   );
-
 }
-

@@ -4,16 +4,17 @@ import React, {
   useImperativeHandle,
   forwardRef,
   useState,
-  useCallback
+  useCallback,
 } from 'react';
 import { TextInputProps } from 'react-native';
 
-import { Container, TextInput } from './styles';
 import { useField } from '@unform/core';
+import { Container, TextInput } from './styles';
 
 interface InputProps extends TextInputProps {
   name: string;
-  mask?: 'cpf';
+  // eslint-disable-next-line react/require-default-props
+  mask?: 'cpf' | null;
 }
 
 interface InputValueReference {
@@ -25,7 +26,7 @@ interface InputRef {
 
 const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
   { name, mask = null, ...rest },
-  ref
+  ref,
 ) => {
   const inputElementRef = useRef<any>(null);
   const {
@@ -37,7 +38,7 @@ const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
   const inputValueRef = useRef<InputValueReference>({ value: defaultValue });
 
   const [isFocused, setIsFocused] = useState(false);
-  const [isFilled, setIsFilled] = useState(false);
+  const [, setIsFilled] = useState(false);
 
   const handleInputFocus = useCallback(() => {
     setIsFocused(true);
@@ -60,7 +61,7 @@ const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
       name: fieldName,
       ref: inputValueRef.current,
       path: 'value',
-      setValue: (ref: any, value: string) => {
+      setValue: (_ref: any, value: string) => {
         inputValueRef.current.value = value;
         inputElementRef.current.setNativeProps({ text: value });
       },
@@ -69,7 +70,7 @@ const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
         inputElementRef.current.clear();
       },
     });
-  }, [fieldName, registerField, inputValueRef.current.value]);
+  }, [fieldName, registerField]);
 
   return (
     <Container isFocused={isFocused} isErrored={!!error}>
@@ -79,7 +80,7 @@ const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
         defaultValue={defaultValue}
         onFocus={handleInputFocus}
         onBlur={handleInputBlur}
-        onChangeText={(value) => {
+        onChangeText={value => {
           inputValueRef.current.value = value;
         }}
         {...rest}
@@ -88,4 +89,6 @@ const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
   );
 };
 
-export default forwardRef(Input);
+const InputText = forwardRef(Input);
+
+export default InputText;
